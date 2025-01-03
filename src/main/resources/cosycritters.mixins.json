@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "pigcart.cosycritters.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "client": [
+    "PlayerMixin",
+    "CrossCollisionBlockMixin",
+    "WallBlockMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
