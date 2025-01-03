@@ -6,7 +6,8 @@
   "client": [
     "PlayerMixin",
     "CrossCollisionBlockMixin",
-    "WallBlockMixin"
+    "WallBlockMixin",
+    "LeavesBlockMixin"
   ],
   "injectors": {
     "defaultRequire": 1

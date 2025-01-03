@@ -13,7 +13,7 @@ import pigcart.cosycritters.Cosycritters;
 
 public class BirdParticle extends TextureSheetParticle {
 
-    boolean flying = false;
+    boolean flyUpAwayToTheSunLikeAFeatheryPieceOfGargbage = false;
     Vec3 facing;
 
     private BirdParticle(ClientLevel level, double x, double y, double z, SpriteSet provider) {
@@ -37,13 +37,15 @@ public class BirdParticle extends TextureSheetParticle {
         if (this.age % 20 == 0) {
             Vec3 birdPos = new Vec3(this.x, this.y, this.z);
             if (Minecraft.getInstance().cameraEntity.position().distanceTo(birdPos) < 10) {
-                flying = true;
+                flyUpAwayToTheSunLikeAFeatheryPieceOfGargbage = true;
                 this.sprite = Minecraft.getInstance().particleEngine.textureAtlas.getSprite(ResourceLocation.fromNamespaceAndPath(Cosycritters.MOD_ID, "bird_flight"));
                 this.lifetime = 100;
                 this.age = 0;
+            } else if (!Minecraft.getInstance().cameraEntity.position().closerThan(new Vec3(x, y, z), 64)) {
+                this.remove();
             }
         }
-        if (flying) {
+        if (flyUpAwayToTheSunLikeAFeatheryPieceOfGargbage) {
             this.quadSize = Mth.lerp((float) age / lifetime, 0.5F, 0);
             this.xd = this.facing.x;
             this.yd = this.facing.y;

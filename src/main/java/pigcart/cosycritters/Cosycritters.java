@@ -32,7 +32,7 @@ public class Cosycritters implements ClientModInitializer {
     private static boolean wasSleeping = false;
     private static int hatManSpawnDelay = 0;
     public static int birdCount = 0;
-    public static int maxBirdCount = 5;
+    public static int maxBirdCount = 20;
 
     @Override
     public void onInitializeClient() {
