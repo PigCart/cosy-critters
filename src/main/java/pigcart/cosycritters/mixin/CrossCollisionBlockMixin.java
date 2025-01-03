@@ -21,6 +21,6 @@ public abstract class CrossCollisionBlockMixin extends Block implements SimpleWa
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
         super.animateTick(state, level, pos, random);
-        Cosycritters.spawnBird(state, level, pos);
+        Cosycritters.trySpawnBird(state, level, pos);
     }
 }

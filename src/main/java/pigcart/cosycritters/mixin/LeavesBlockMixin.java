@@ -16,6 +16,6 @@ public class LeavesBlockMixin {
 
     @Inject(method = "animateTick", at = @At("HEAD"))
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random, CallbackInfo ci) {
-        Cosycritters.spawnBird(state, level, pos);
+        Cosycritters.trySpawnBird(state, level, pos);
     }
 }
