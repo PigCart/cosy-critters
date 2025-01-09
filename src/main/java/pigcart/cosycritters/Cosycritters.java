@@ -25,6 +25,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import pigcart.cosycritters.particle.BirdParticle;
 import pigcart.cosycritters.particle.HatManParticle;
+import pigcart.cosycritters.particle.MothParticle;
 
 import java.util.Optional;
 
@@ -33,6 +34,7 @@ public class Cosycritters implements ClientModInitializer {
     public static final String MOD_ID = "cosycritters";
     public static SimpleParticleType BIRD;
     public static SimpleParticleType HAT_MAN;
+    public static SimpleParticleType MOTH;
 
     private static boolean wasSleeping = false;
     public static int birdCount = 0;
@@ -44,6 +46,8 @@ public class Cosycritters implements ClientModInitializer {
         ParticleFactoryRegistry.getInstance().register(BIRD, BirdParticle.DefaultFactory::new);
         HAT_MAN = Registry.register(BuiltInRegistries.PARTICLE_TYPE, ResourceLocation.fromNamespaceAndPath(MOD_ID, "hat_man"), FabricParticleTypes.simple(true));
         ParticleFactoryRegistry.getInstance().register(HAT_MAN, HatManParticle.DefaultFactory::new);
+        MOTH = Registry.register(BuiltInRegistries.PARTICLE_TYPE, ResourceLocation.fromNamespaceAndPath(MOD_ID, "moth"), FabricParticleTypes.simple(true));
+        ParticleFactoryRegistry.getInstance().register(MOTH, MothParticle.DefaultFactory::new);
 
         ClientTickEvents.START_CLIENT_TICK.register(this::onTick);
         ClientPlayConnectionEvents.JOIN.register(this::onJoin);
