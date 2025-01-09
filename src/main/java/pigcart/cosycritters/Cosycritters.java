@@ -14,6 +14,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -27,6 +28,7 @@ import pigcart.cosycritters.particle.BirdParticle;
 import pigcart.cosycritters.particle.HatManParticle;
 import pigcart.cosycritters.particle.MothParticle;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class Cosycritters implements ClientModInitializer {
@@ -39,6 +41,7 @@ public class Cosycritters implements ClientModInitializer {
     private static boolean wasSleeping = false;
     public static int birdCount = 0;
     public static int maxBirdCount = 50;
+    public static ArrayList<MothParticle> moths = new ArrayList<>();
 
     @Override
     public void onInitializeClient() {

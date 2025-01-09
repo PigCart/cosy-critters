@@ -1,15 +1,14 @@
 package pigcart.cosycritters.particle;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Camera;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Position;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.joml.AxisAngle4d;
@@ -19,24 +18,55 @@ import pigcart.cosycritters.Cosycritters;
 
 public class MothParticle extends TextureSheetParticle {
 
+    private final Vec3 targetLamp;
+
     private MothParticle(ClientLevel level, double x, double y, double z, SpriteSet provider) {
         super(level, x, y, z);
         this.sprite = provider.get(level.random);
         this.quadSize = 0.1f;
         this.lifetime = 6000;
-        Cosycritters.birdCount++;
+        this.targetLamp = BlockPos.containing(x, y, z).getCenter();
+        this.xd = 0.5f;
+        Cosycritters.moths.add(this);
     }
 
     @Override
     public void remove() {
-        Cosycritters.birdCount--;
+        Cosycritters.moths.remove(this);
         super.remove();
     }
 
     @Override
     public void tick() {
         super.tick();
-
+        // stay within a limit from the lamp
+        float centeringFactor = 0.00005f;
+        if (targetLamp.distanceTo(new Vec3(x, y, z)) > 1) {
+            this.xd =+ (targetLamp.x - this.x) * centeringFactor;
+            this.yd =+ (targetLamp.y - this.y) * centeringFactor;
+            this.zd =+ (targetLamp.z - this.z) * centeringFactor;
+        } else if (targetLamp.distanceTo(new Vec3(x, y, z)) < 0.5) {
+            this.xd =- (targetLamp.x - this.x) * centeringFactor;
+            this.yd =- (targetLamp.y - this.y) * centeringFactor;
+            this.zd =- (targetLamp.z - this.z) * centeringFactor;
+        }
+        // constrain speed
+        float speed = Mth.sqrt((float) (this.xd*this.xd + this.yd*this.yd + this.zd*this.zd));
+        float maxSpeed = 0.2f;
+        float minSpeed = 0.1f;
+        if (speed > maxSpeed) {
+            this.xd = (this.xd/speed)*maxSpeed;
+            this.yd = (this.yd/speed)*maxSpeed;
+            this.zd = (this.zd/speed)*maxSpeed;
+        } else if (speed < minSpeed) {
+            this.xd = (this.xd/speed)*minSpeed;
+            this.yd = (this.yd/speed)*minSpeed;
+            this.zd = (this.zd/speed)*minSpeed;
+        }
+        // add randomness
+        this.xd = this.xd * ((random.nextFloat() + 0.5) / 2);
+        this.yd = this.yd * ((random.nextFloat() + 0.5) / 2);
+        this.zd = this.zd * ((random.nextFloat() + 0.5) / 2);
     }
 
     @Override
