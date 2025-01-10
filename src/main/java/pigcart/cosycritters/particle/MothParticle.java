@@ -7,11 +7,11 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Position;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.joml.AxisAngle4d;
+import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import pigcart.cosycritters.Cosycritters;
@@ -24,21 +24,22 @@ public class MothParticle extends TextureSheetParticle {
         super(level, x, y, z);
         this.sprite = provider.get(level.random);
         this.quadSize = 0.1f;
-        this.lifetime = 6000;
+        this.lifetime = 500;
         this.targetLamp = BlockPos.containing(x, y, z).getCenter();
         this.xd = 0.5f;
-        Cosycritters.moths.add(this);
+        Cosycritters.mothCount++;
     }
 
     @Override
     public void remove() {
-        Cosycritters.moths.remove(this);
+        Cosycritters.mothCount--;
         super.remove();
     }
 
     @Override
     public void tick() {
         super.tick();
+        if (this.x == this.xo && this.y == this.yo && this.z == this.zo) this.remove();
         // stay within a limit from the lamp
         float centeringFactor = 0.00005f;
         if (targetLamp.distanceTo(new Vec3(x, y, z)) > 1) {
@@ -52,8 +53,8 @@ public class MothParticle extends TextureSheetParticle {
         }
         // constrain speed
         float speed = Mth.sqrt((float) (this.xd*this.xd + this.yd*this.yd + this.zd*this.zd));
-        float maxSpeed = 0.2f;
-        float minSpeed = 0.1f;
+        float maxSpeed = 0.1f;
+        float minSpeed = 0.05f;
         if (speed > maxSpeed) {
             this.xd = (this.xd/speed)*maxSpeed;
             this.yd = (this.yd/speed)*maxSpeed;
@@ -64,9 +65,9 @@ public class MothParticle extends TextureSheetParticle {
             this.zd = (this.zd/speed)*minSpeed;
         }
         // add randomness
-        this.xd = this.xd * ((random.nextFloat() + 0.5) / 2);
-        this.yd = this.yd * ((random.nextFloat() + 0.5) / 2);
-        this.zd = this.zd * ((random.nextFloat() + 0.5) / 2);
+        this.xd = this.xd * ((random.nextFloat() + 0.5));
+        this.yd = this.yd * ((random.nextFloat() + 0.5));
+        this.zd = this.zd * ((random.nextFloat() + 0.5));
     }
 
     @Override
@@ -78,12 +79,27 @@ public class MothParticle extends TextureSheetParticle {
         Vector3f cameraOffset = new Vector3f(x, y, z);
 
         float lerpedAge = Mth.lerp(partialTick, age - 1, age);
-        float wingsPos = Mth.sin(lerpedAge * 2) * 0.7f;
+        float wingsPos = Mth.sin(lerpedAge * 1.5f) * 0.7f;
 
         Quaternionf leftWing = new Quaternionf(new AxisAngle4d((wingsPos * Mth.HALF_PI) - Mth.HALF_PI, 1, 0, 0));
         Quaternionf rightWing = new Quaternionf(new AxisAngle4d((wingsPos * Mth.HALF_PI) - Mth.HALF_PI, -1, 0, 0));
-        Vector3f leftWingOffset = new Vector3f(cameraOffset).add(0, -quadSize * wingsPos, quadSize - (quadSize * Mth.abs(wingsPos)));
-        Vector3f rightWingOffset = new Vector3f(cameraOffset).add(0, -quadSize * wingsPos, (quadSize * Mth.abs(wingsPos) - quadSize));
+        Vector3f leftWingOffset = new Vector3f(0, -quadSize * wingsPos, quadSize - (quadSize * Mth.abs(wingsPos)));
+        Vector3f rightWingOffset = new Vector3f(0, -quadSize * wingsPos, (quadSize * Mth.abs(wingsPos) - quadSize));
+
+        Vector3f delta = new Vector3f((float) this.xd, (float) this.yd, (float) this.zd);
+        final float angle = (float) Math.acos(delta.normalize().y);
+        Vector3f axis = new Vector3f(-delta.z(), 0, delta.x()).normalize();
+        Quaternionf quaternion = new Quaternionf(new AxisAngle4f(-angle, axis));
+        leftWing.mul(quaternion);
+        rightWing.mul(quaternion);
+
+        leftWingOffset.rotate(quaternion);
+        rightWingOffset.rotate(quaternion);
+        // AAAAAUUUUUUUUUUUUGH
+        // ian hubert school of thought: "moths are pure chaos don't overthink it"
+
+        leftWingOffset.add(cameraOffset);
+        rightWingOffset.add(cameraOffset);
         flipItTurnwaysIfBackfaced(leftWing, leftWingOffset);
         flipItTurnwaysIfBackfaced(rightWing, rightWingOffset);
         this.renderRotatedQuad(buffer, leftWing, leftWingOffset.x, leftWingOffset.y, leftWingOffset.z, partialTick);

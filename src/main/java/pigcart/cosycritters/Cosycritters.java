@@ -41,6 +41,8 @@ public class Cosycritters implements ClientModInitializer {
     private static boolean wasSleeping = false;
     public static int birdCount = 0;
     public static int maxBirdCount = 50;
+    public static int mothCount = 0;
+    public static int maxMothCount = 10;
     public static ArrayList<MothParticle> moths = new ArrayList<>();
 
     @Override
@@ -58,6 +60,7 @@ public class Cosycritters implements ClientModInitializer {
 
     private void onJoin(ClientPacketListener clientPacketListener, PacketSender packetSender, Minecraft minecraft) {
         birdCount = 0;
+        mothCount = 0;
     }
 
     private void onTick(Minecraft minecraft) {
@@ -108,6 +111,11 @@ public class Cosycritters implements ClientModInitializer {
             if (level.clip(new ClipContext(spawnFrom, pos, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty())).getType().equals(HitResult.Type.MISS)) {
                 level.addParticle(BIRD, spawnFrom.x, spawnFrom.y, spawnFrom.z, pos.x, pos.y, pos.z);
             }
+        }
+    }
+    public static void trySpawnMoth(BlockState state, Level level, BlockPos blockPos) {
+        if (level.isNight() && mothCount < maxMothCount && level.canSeeSky(blockPos)) {
+            level.addParticle(MOTH, blockPos.getX(), blockPos.getY(), blockPos.getZ(), 0, 0, 0);
         }
     }
 }
