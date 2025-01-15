@@ -14,7 +14,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -27,6 +26,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import pigcart.cosycritters.particle.BirdParticle;
 import pigcart.cosycritters.particle.HatManParticle;
 import pigcart.cosycritters.particle.MothParticle;
+import pigcart.cosycritters.particle.SpiderParticle;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -37,6 +37,7 @@ public class Cosycritters implements ClientModInitializer {
     public static SimpleParticleType BIRD;
     public static SimpleParticleType HAT_MAN;
     public static SimpleParticleType MOTH;
+    public static SimpleParticleType SPIDER;
 
     private static boolean wasSleeping = false;
     public static int birdCount = 0;
@@ -53,6 +54,8 @@ public class Cosycritters implements ClientModInitializer {
         ParticleFactoryRegistry.getInstance().register(HAT_MAN, HatManParticle.DefaultFactory::new);
         MOTH = Registry.register(BuiltInRegistries.PARTICLE_TYPE, ResourceLocation.fromNamespaceAndPath(MOD_ID, "moth"), FabricParticleTypes.simple(true));
         ParticleFactoryRegistry.getInstance().register(MOTH, MothParticle.DefaultFactory::new);
+        SPIDER = Registry.register(BuiltInRegistries.PARTICLE_TYPE, ResourceLocation.fromNamespaceAndPath(MOD_ID, "spider"), FabricParticleTypes.simple(true));
+        ParticleFactoryRegistry.getInstance().register(SPIDER, SpiderParticle.DefaultFactory::new);
 
         ClientTickEvents.START_CLIENT_TICK.register(this::onTick);
         ClientPlayConnectionEvents.JOIN.register(this::onJoin);

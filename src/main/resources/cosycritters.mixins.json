@@ -6,7 +6,6 @@
   "client": [
     "CrossCollisionBlockMixin",
     "LeavesBlockMixin",
-    "PlayerMixin",
     "WallBlockMixin",
     "BaseTorchBlockMixin",
     "LanternBlockMixin",
