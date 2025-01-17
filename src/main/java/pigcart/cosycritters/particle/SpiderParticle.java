@@ -7,15 +7,22 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
-import org.joml.AxisAngle4d;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 
 public class SpiderParticle extends TextureSheetParticle {
 
     boolean clockwise;
     BlockPos pos;
+    Direction direction;
 
     private SpiderParticle(ClientLevel level, double x, double y, double z, SpriteSet provider) {
         super(level, x, y, z);
@@ -24,29 +31,184 @@ public class SpiderParticle extends TextureSheetParticle {
         this.lifetime = 500;
         this.clockwise = this.random.nextBoolean();
         this.pos = BlockPos.containing(x, y, z);
+        this.direction = Direction.DOWN;
+        this.hasPhysics = false;
     }
 
     @Override
     public void tick() {
         super.tick();
+        this.oRoll = this.roll;
+        float speed = 0.05f;
+        this.roll += (clockwise ? speed : -speed);
+        
         if (!pos.equals(BlockPos.containing(x, y, z))) {
             this.pos = BlockPos.containing(x, y, z);
             clockwise = random.nextBoolean();
         }
-        this.oRoll = this.roll;
+        // feel forwards for a block face to crawl onto
+        Vec3 from = new Vec3(x, y, z);
+        Vec3 to = from.add(new Vec3(xd, yd, zd).normalize().multiply(quadSize / 2, quadSize / 2, quadSize / 2));
+        BlockHitResult hitResult = level.clip(new ClipContext(from, to, ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, CollisionContext.empty()));
+        if (hitResult.getType().equals(HitResult.Type.BLOCK)) {
+            // reorient
+            Direction oldDirection = direction;
+            direction = hitResult.getDirection().getOpposite();
 
-        this.roll += (clockwise ? 0.2f : -0.2f);
-        this.xd = Mth.cos(roll) * -0.1;
-        this.zd = Mth.sin(roll) * 0.1;
+            if (oldDirection.getAxis() == Direction.Axis.Y) {
+                // from ceiling or floor to a wall
+                if (direction.equals(Direction.SOUTH)) {
+                    roll = Mth.HALF_PI * 3;
+                } else if (direction.equals(Direction.EAST)) {
+                    roll = Mth.HALF_PI * 2;
+                } else if (direction.equals(Direction.NORTH)) {
+                    roll = Mth.HALF_PI * 4;
+                } else if (direction.equals(Direction.WEST)) {
+                    roll = Mth.HALF_PI;
+                }
+                if (oldDirection.equals(Direction.UP)) roll += Mth.PI;
+            } else if (oldDirection.getAxis() == Direction.Axis.X) {
+                // from as east or west wall
+                if (direction.equals(Direction.SOUTH)) {
+                    roll = Mth.HALF_PI * 2;
+                } else if (direction.equals(Direction.UP)) {
+                    roll = Mth.HALF_PI * 3;
+                } else if (direction.equals(Direction.NORTH)) {
+                    roll = Mth.HALF_PI;
+                } else if (direction.equals(Direction.DOWN)) {
+                    roll = Mth.HALF_PI * 4;
+                }
+                if (oldDirection.equals(Direction.WEST)) roll += Mth.PI;
+            } else if (oldDirection.getAxis() == Direction.Axis.Z) {
+                // from a north or south wall
+                // i dont understand why the numbers are like this TwT
+                if (direction.equals(Direction.EAST)) {
+                    roll = Mth.HALF_PI;
+                } else if (direction.equals(Direction.UP)) {
+                    roll = Mth.HALF_PI * 2;
+                } else if (direction.equals(Direction.WEST)) {
+                    roll = Mth.HALF_PI * 2;
+                } else if (direction.equals(Direction.DOWN)) {
+                    roll = Mth.HALF_PI;
+                }
+                if (oldDirection.equals(Direction.SOUTH)) roll += Mth.PI;
+            }
+        } else {
+            // feel down + backwards for a ledge that we've just crawled off
+            to = from.add(direction.getUnitVec3().multiply(0.5, 0.5, 0.5))
+                    .add(new Vec3(-xd, -yd, -zd).normalize().multiply(0.5, 0.5, 0.5));
+            hitResult = level.clip(new ClipContext(from, to, ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, CollisionContext.empty()));
+            if (hitResult.getType().equals(HitResult.Type.BLOCK) && direction != hitResult.getDirection().getOpposite()) {
+                // reorient
+                Direction oldDirection = direction;
+                direction = hitResult.getDirection().getOpposite();
+                if (oldDirection.getAxis() == Direction.Axis.Y) {
+                    // from ceiling or floor to a wall
+                    if (direction.equals(Direction.SOUTH)) {
+                        roll = Mth.HALF_PI * 3;
+                    } else if (direction.equals(Direction.EAST)) {
+                        roll = Mth.HALF_PI * 2;
+                    } else if (direction.equals(Direction.NORTH)) {
+                        roll = Mth.HALF_PI * 4;
+                    } else if (direction.equals(Direction.WEST)) {
+                        roll = Mth.HALF_PI;
+                    }
+                    if (oldDirection.equals(Direction.DOWN)) roll += Mth.PI;
+                } else if (oldDirection.getAxis() == Direction.Axis.X) {
+                    // from as east or west wall
+                    if (direction.equals(Direction.SOUTH)) {
+                        roll = Mth.HALF_PI * 2;
+                    } else if (direction.equals(Direction.UP)) {
+                        roll = Mth.HALF_PI * 3;
+                    } else if (direction.equals(Direction.NORTH)) {
+                        roll = Mth.HALF_PI;
+                    } else if (direction.equals(Direction.DOWN)) {
+                        roll = Mth.HALF_PI * 4;
+                    }
+                    if (oldDirection.equals(Direction.EAST)) roll += Mth.PI;
+                } else if (oldDirection.getAxis() == Direction.Axis.Z) {
+                    // from a north or south wall
+                    // i dont understand why the numbers are like this TwT
+                    if (direction.equals(Direction.EAST)) {
+                        roll = Mth.HALF_PI;
+                    } else if (direction.equals(Direction.UP)) {
+                        roll = Mth.HALF_PI * 2;
+                    } else if (direction.equals(Direction.WEST)) {
+                        roll = Mth.HALF_PI * 2;
+                    } else if (direction.equals(Direction.DOWN)) {
+                        roll = Mth.HALF_PI;
+                    }
+                    if (oldDirection.equals(Direction.NORTH)) roll += Mth.PI;
+                }
+            }
+        }
+        switch (this.direction) {
+            case DOWN -> {
+                this.xd = Mth.cos(roll) * -speed;
+                this.zd = Mth.sin(roll) * speed;
+                this.yd = 0;
+            }
+            case UP -> {
+                this.xd = Mth.sin(roll) * speed;
+                this.zd = Mth.cos(roll) * -speed;
+                this.yd = 0;
+            }
+            case NORTH -> {
+                this.xd = Mth.sin(roll) * -speed;
+                this.yd = Mth.cos(roll) * speed;
+                this.zd = 0;
+            }
+            case SOUTH -> {
+                this.xd = Mth.cos(roll) * speed;
+                this.yd = Mth.sin(roll) * -speed;
+                this.zd = 0;
+            }
+            case WEST -> {
+                this.yd = Mth.sin(roll) * speed;
+                this.zd = Mth.cos(roll) * -speed;
+                this.xd = 0;
+            }
+            case EAST -> {
+                this.yd = Mth.cos(roll) * -speed;
+                this.zd = Mth.sin(roll) * speed;
+                this.xd = 0;
+            }
+        }
     }
 
     @Override
     public void render(VertexConsumer buffer, Camera camera, float partialTick) {
-        Quaternionf quaternionf = new Quaternionf(new AxisAngle4d(Mth.HALF_PI, -1, 0, 0));
+        Quaternionf quaternionf = new Quaternionf(new AxisAngle4f(Mth.HALF_PI, -1, 0, 0));
+        //direction.getRotation();
+        // well i can't figure out whats going on with the coordinates so fuck it switch time
+        switch (direction) {
+            case DOWN -> {
+                quaternionf = new Quaternionf(new AxisAngle4f(Mth.HALF_PI, -1, 0, 0));
+            }
+            case UP -> {
+                quaternionf = new Quaternionf(new AxisAngle4f(Mth.HALF_PI, 1, 0, 0));
+                quaternionf.rotateZ(Mth.HALF_PI);
+            }
+            case NORTH -> {
+                quaternionf = new Quaternionf(new AxisAngle4f(Mth.HALF_PI, 0, 0, -1));
+            }
+            case SOUTH -> {
+                quaternionf = new Quaternionf(new AxisAngle4f(Mth.PI, 0, 1, 0));
+                // up/down & east/west are just the inverse of each other why is south like this
+                // i feel like theres something obvious that im completely missing
+            }
+            case WEST -> {
+                quaternionf = new Quaternionf(new AxisAngle4f(Mth.HALF_PI, 0, 1, 0));
+                quaternionf.rotateZ(Mth.PI);
+            }
+            case EAST -> {
+                quaternionf = new Quaternionf(new AxisAngle4f(Mth.HALF_PI, 0, -1, 0));
+                quaternionf.rotateZ(Mth.HALF_PI);
+            }
+        }
         if (this.roll != 0.0F) {
             quaternionf.rotateZ(Mth.lerp(partialTick, this.oRoll, this.roll) + Mth.HALF_PI);
         }
-
         this.renderRotatedQuad(buffer, camera, quaternionf, partialTick);
     }
 
