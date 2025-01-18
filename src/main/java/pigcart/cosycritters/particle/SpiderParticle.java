@@ -23,15 +23,18 @@ public class SpiderParticle extends TextureSheetParticle {
     boolean clockwise;
     BlockPos pos;
     Direction direction;
+    float speed;
 
-    private SpiderParticle(ClientLevel level, double x, double y, double z, SpriteSet provider) {
+    private SpiderParticle(ClientLevel level, double x, double y, double z, int direction3DDataValue, SpriteSet provider) {
         super(level, x, y, z);
-        this.sprite = provider.get(this.random);
-        this.quadSize = 0.1F;
-        this.lifetime = 500;
-        this.clockwise = this.random.nextBoolean();
+        this.sprite = provider.get(random);
+        this.quadSize = (random.nextFloat() * 0.1f) + 0.05f;
+        this.speed = quadSize / 2;
+        this.roll = Mth.TWO_PI * random.nextFloat();
+        this.lifetime = 500 + random.nextInt(50);
+        this.clockwise = random.nextBoolean();
         this.pos = BlockPos.containing(x, y, z);
-        this.direction = Direction.DOWN;
+        this.direction = Direction.from3DDataValue(direction3DDataValue);
         this.hasPhysics = false;
     }
 
@@ -39,7 +42,6 @@ public class SpiderParticle extends TextureSheetParticle {
     public void tick() {
         super.tick();
         this.oRoll = this.roll;
-        float speed = 0.05f;
         this.roll += (clockwise ? speed : -speed);
         
         if (!pos.equals(BlockPos.containing(x, y, z))) {
@@ -227,8 +229,8 @@ public class SpiderParticle extends TextureSheetParticle {
         }
 
         @Override
-        public Particle createParticle(SimpleParticleType parameters, ClientLevel level, double x, double y, double z, double velocityX, double velocityY, double velocityZ) {
-            return new SpiderParticle(level, x, y, z, this.provider);
+        public Particle createParticle(SimpleParticleType parameters, ClientLevel level, double x, double y, double z, double direction3DDataValue, double velocityYUnused, double velocityZUnused) {
+            return new SpiderParticle(level, x, y, z, (int)direction3DDataValue, this.provider);
         }
     }
 }

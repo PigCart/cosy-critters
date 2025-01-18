@@ -116,9 +116,19 @@ public class Cosycritters implements ClientModInitializer {
             }
         }
     }
-    public static void trySpawnMoth(BlockState state, Level level, BlockPos blockPos) {
+    public static void trySpawnMoth(Level level, BlockPos blockPos) {
         if (level.isNight() && mothCount < maxMothCount && level.canSeeSky(blockPos)) {
             level.addParticle(MOTH, blockPos.getX(), blockPos.getY(), blockPos.getZ(), 0, 0, 0);
+        }
+    }
+    public static void trySpawnSpider(Level level, BlockPos blockPos) {
+        if (Minecraft.getInstance().player.position().closerThan(blockPos.getCenter(), 2)) return;
+        Direction direction = Direction.getRandom(level.random);
+        blockPos = blockPos.relative(direction);
+        BlockState state = level.getBlockState(blockPos);
+        if (state.isFaceSturdy(level, blockPos, direction.getOpposite())) {
+            final Vec3 spawnPos = blockPos.getCenter().add(direction.getUnitVec3().multiply(-0.6, -0.6, -0.6));
+            level.addParticle(SPIDER, spawnPos.x, spawnPos.y, spawnPos.z, direction.get3DDataValue(), 0, 0);
         }
     }
 }

@@ -10,7 +10,8 @@
     "BaseTorchBlockMixin",
     "LanternBlockMixin",
     "TorchBlockMixin",
-    "WallTorchBlockMixin"
+    "WallTorchBlockMixin",
+    "WebBlockMixin"
   ],
   "injectors": {
     "defaultRequire": 1

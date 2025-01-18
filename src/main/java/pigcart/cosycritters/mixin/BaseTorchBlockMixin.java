@@ -19,6 +19,6 @@ public class BaseTorchBlockMixin extends Block {
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
         super.animateTick(state, level, pos, random);
-        Cosycritters.trySpawnMoth(state, level, pos);
+        Cosycritters.trySpawnMoth(level, pos);
     }
 }

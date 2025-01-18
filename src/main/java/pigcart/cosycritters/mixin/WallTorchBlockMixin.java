@@ -16,6 +16,6 @@ public class WallTorchBlockMixin {
 
     @Inject(method = "animateTick", at = @At("HEAD"))
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random, CallbackInfo ci) {
-        Cosycritters.trySpawnMoth(state, level, pos);
+        Cosycritters.trySpawnMoth(level, pos);
     }
 }
