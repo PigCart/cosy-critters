@@ -21,9 +21,10 @@ import org.joml.Quaternionf;
 public class SpiderParticle extends TextureSheetParticle {
 
     boolean clockwise;
-    BlockPos pos;
+    BlockPos blockPos;
     Direction direction;
     float speed;
+    Vec3 oldPosition;
 
     private SpiderParticle(ClientLevel level, double x, double y, double z, int direction3DDataValue, SpriteSet provider) {
         super(level, x, y, z);
@@ -33,23 +34,32 @@ public class SpiderParticle extends TextureSheetParticle {
         this.roll = Mth.TWO_PI * random.nextFloat();
         this.lifetime = 500 + random.nextInt(50);
         this.clockwise = random.nextBoolean();
-        this.pos = BlockPos.containing(x, y, z);
+        this.blockPos = BlockPos.containing(x, y, z);
         this.direction = Direction.from3DDataValue(direction3DDataValue);
+        this.oldPosition = new Vec3(x, y, z);
         this.hasPhysics = false;
     }
 
     @Override
     public void tick() {
         super.tick();
-        this.oRoll = this.roll;
-        this.roll += (clockwise ? speed : -speed);
+        Vec3 from = new Vec3(x, y, z);
+        if (age % 20 == 0) {
+            if (oldPosition.closerThan(from, 0.05)) {
+                this.remove();
+            } else {
+                oldPosition = from;
+            }
+        }
+
+        oRoll = roll;
+        roll += (clockwise ? speed : -speed);
         
-        if (!pos.equals(BlockPos.containing(x, y, z))) {
-            this.pos = BlockPos.containing(x, y, z);
+        if (!blockPos.equals(BlockPos.containing(x, y, z))) {
+            blockPos = BlockPos.containing(x, y, z);
             clockwise = random.nextBoolean();
         }
         // feel forwards for a block face to crawl onto
-        Vec3 from = new Vec3(x, y, z);
         Vec3 to = from.add(new Vec3(xd, yd, zd).normalize().multiply(quadSize / 2, quadSize / 2, quadSize / 2));
         BlockHitResult hitResult = level.clip(new ClipContext(from, to, ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, CollisionContext.empty()));
         if (hitResult.getType().equals(HitResult.Type.BLOCK)) {
@@ -96,51 +106,61 @@ public class SpiderParticle extends TextureSheetParticle {
                 if (oldDirection.equals(Direction.SOUTH)) roll += Mth.PI;
             }
         } else {
-            // feel down + backwards for a ledge that we've just crawled off
-            to = from.add(direction.getUnitVec3().multiply(0.5, 0.5, 0.5))
-                    .add(new Vec3(-xd, -yd, -zd).normalize().multiply(0.5, 0.5, 0.5));
+            // feel down, are we floating?
+            to = from.add(direction.getUnitVec3().multiply(0.2, 0.2, 0.2));
             hitResult = level.clip(new ClipContext(from, to, ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, CollisionContext.empty()));
-            if (hitResult.getType().equals(HitResult.Type.BLOCK) && direction != hitResult.getDirection().getOpposite()) {
-                // reorient
-                Direction oldDirection = direction;
-                direction = hitResult.getDirection().getOpposite();
-                if (oldDirection.getAxis() == Direction.Axis.Y) {
-                    // from ceiling or floor to a wall
-                    if (direction.equals(Direction.SOUTH)) {
-                        roll = Mth.HALF_PI * 3;
-                    } else if (direction.equals(Direction.EAST)) {
-                        roll = Mth.HALF_PI * 2;
-                    } else if (direction.equals(Direction.NORTH)) {
-                        roll = Mth.HALF_PI * 4;
-                    } else if (direction.equals(Direction.WEST)) {
-                        roll = Mth.HALF_PI;
+            if (hitResult.getType().equals(HitResult.Type.MISS)) {
+                // feel down + backwards for a ledge that we've just crawled off
+                to = from.add(direction.getUnitVec3().multiply(0.5, 0.5, 0.5))
+                        .add(new Vec3(-xd, -yd, -zd).normalize().multiply(0.5, 0.5, 0.5));
+                hitResult = level.clip(new ClipContext(from, to, ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, CollisionContext.empty()));
+                if (hitResult.getType().equals(HitResult.Type.BLOCK)) {
+                    if (direction != hitResult.getDirection().getOpposite()) {
+                        // reorient
+                        Direction oldDirection = direction;
+                        direction = hitResult.getDirection().getOpposite();
+                        if (oldDirection.getAxis() == Direction.Axis.Y) {
+                            // from ceiling or floor to a wall
+                            if (direction.equals(Direction.SOUTH)) {
+                                roll = Mth.HALF_PI * 3;
+                            } else if (direction.equals(Direction.EAST)) {
+                                roll = Mth.HALF_PI * 2;
+                            } else if (direction.equals(Direction.NORTH)) {
+                                roll = Mth.HALF_PI * 4;
+                            } else if (direction.equals(Direction.WEST)) {
+                                roll = Mth.HALF_PI;
+                            }
+                            if (oldDirection.equals(Direction.DOWN)) roll += Mth.PI;
+                        } else if (oldDirection.getAxis() == Direction.Axis.X) {
+                            // from as east or west wall
+                            if (direction.equals(Direction.SOUTH)) {
+                                roll = Mth.HALF_PI * 2;
+                            } else if (direction.equals(Direction.UP)) {
+                                roll = Mth.HALF_PI * 3;
+                            } else if (direction.equals(Direction.NORTH)) {
+                                roll = Mth.HALF_PI;
+                            } else if (direction.equals(Direction.DOWN)) {
+                                roll = Mth.HALF_PI * 4;
+                            }
+                            if (oldDirection.equals(Direction.EAST)) roll += Mth.PI;
+                        } else if (oldDirection.getAxis() == Direction.Axis.Z) {
+                            // from a north or south wall
+                            // i dont understand why the numbers are like this TwT
+                            if (direction.equals(Direction.EAST)) {
+                                roll = Mth.HALF_PI;
+                            } else if (direction.equals(Direction.UP)) {
+                                roll = Mth.HALF_PI * 2;
+                            } else if (direction.equals(Direction.WEST)) {
+                                roll = Mth.HALF_PI * 2;
+                            } else if (direction.equals(Direction.DOWN)) {
+                                roll = Mth.HALF_PI;
+                            }
+                            if (oldDirection.equals(Direction.NORTH)) roll += Mth.PI;
+                        }
                     }
-                    if (oldDirection.equals(Direction.DOWN)) roll += Mth.PI;
-                } else if (oldDirection.getAxis() == Direction.Axis.X) {
-                    // from as east or west wall
-                    if (direction.equals(Direction.SOUTH)) {
-                        roll = Mth.HALF_PI * 2;
-                    } else if (direction.equals(Direction.UP)) {
-                        roll = Mth.HALF_PI * 3;
-                    } else if (direction.equals(Direction.NORTH)) {
-                        roll = Mth.HALF_PI;
-                    } else if (direction.equals(Direction.DOWN)) {
-                        roll = Mth.HALF_PI * 4;
-                    }
-                    if (oldDirection.equals(Direction.EAST)) roll += Mth.PI;
-                } else if (oldDirection.getAxis() == Direction.Axis.Z) {
-                    // from a north or south wall
-                    // i dont understand why the numbers are like this TwT
-                    if (direction.equals(Direction.EAST)) {
-                        roll = Mth.HALF_PI;
-                    } else if (direction.equals(Direction.UP)) {
-                        roll = Mth.HALF_PI * 2;
-                    } else if (direction.equals(Direction.WEST)) {
-                        roll = Mth.HALF_PI * 2;
-                    } else if (direction.equals(Direction.DOWN)) {
-                        roll = Mth.HALF_PI;
-                    }
-                    if (oldDirection.equals(Direction.NORTH)) roll += Mth.PI;
+                } else {
+                    // bail out if we can't find the ledge. floating spider? what floating spider?
+                    this.remove();
                 }
             }
         }
