@@ -32,6 +32,24 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 public class Cosycritters implements ClientModInitializer {
+    //TODO: more robust mixins
+    // ants (spiders that walk in a line)
+    // flies (attracted to the scene of a death)
+    // fireflies (swamps and plains, they glow)
+    // fire flies (they glow, but aggressively)
+    // fired flies (they are handing out resumes)
+    // fryer flies (they are no longer handing out resumes)
+    // bird flocking behaviour
+    // bird angle-based sprite selection
+    // a few more common bird types (pigeons, robins)
+    // butterflies (moths without a lamp)
+    // silverfish swarm (boids, renders in place of silverfish)
+    // bee swarm (boids, renders in place of bee)
+    // fish maybe?
+    // rats/mice
+    // jesus or something (when on low health and a totem is on your hotbar but youre not holding it)
+    // herobrine (appears at edge of render distance by a wall, walking behind it when you look at him)
+    // game of life
 
     public static final String MOD_ID = "cosycritters";
     public static SimpleParticleType BIRD;
@@ -103,7 +121,6 @@ public class Cosycritters implements ClientModInitializer {
     }
     public static void trySpawnBird(BlockState state, Level level, BlockPos blockPos) {
         if (level.isDay()
-                && level.dayTime() % 1000 < 500
                 && birdCount < maxBirdCount
                 && level.getBlockState(blockPos.above()).isAir()
                 && !Minecraft.getInstance().player.position().closerThan(blockPos.getCenter(), 10)

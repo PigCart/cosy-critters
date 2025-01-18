@@ -26,7 +26,7 @@ public class BirdParticle extends TextureSheetParticle {
         this.sprite = Minecraft.getInstance().particleEngine.textureAtlas.getSprite(ResourceLocation.fromNamespaceAndPath(Cosycritters.MOD_ID, random.nextBoolean() ? "bird_flight_left" : "bird_flight_right"));
         this.quadSize = 0;
         this.lifetime = 6000;
-        this.facing = new Vec3((this.random.nextFloat() - 0.5) / 2, this.random.nextFloat(), (this.random.nextFloat() - 0.5) / 2);
+        this.facing = new Vec3((this.random.nextFloat() - 0.5), this.random.nextFloat(), (this.random.nextFloat() - 0.5)).normalize().multiply(0.5, 0.5, 0.5);
         this.spawnAnimationStart = new Vec3(x, y, z);
         this.spawnAnimationEnd = new Vec3(landAtX, landAtY, landAtZ);
         Cosycritters.birdCount++;
@@ -66,6 +66,8 @@ public class BirdParticle extends TextureSheetParticle {
                 this.sprite = Minecraft.getInstance().particleEngine.textureAtlas.getSprite(ResourceLocation.fromNamespaceAndPath(Cosycritters.MOD_ID, random.nextBoolean() ? "bird_flight_left" : "bird_flight_right"));
                 this.lifetime = 100;
                 this.age = 0;
+                // for some reason updating the velocity after this sends the bird to its spawn position????
+                this.setPos(spawnAnimationEnd.x, spawnAnimationEnd.y, spawnAnimationEnd.z);
             }
             else if (!Minecraft.getInstance().cameraEntity.position().closerThan(new Vec3(x, y, z), 64)) {
                 this.remove();

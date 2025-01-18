@@ -17,7 +17,6 @@ public abstract class CrossCollisionBlockMixin extends Block implements SimpleWa
         super(properties);
     }
 
-    // i imagine overriding directly isn't great for compatibility?
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
         super.animateTick(state, level, pos, random);
