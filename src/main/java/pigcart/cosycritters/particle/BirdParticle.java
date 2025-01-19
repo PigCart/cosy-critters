@@ -23,7 +23,7 @@ public class BirdParticle extends TextureSheetParticle {
 
     private BirdParticle(ClientLevel level, double x, double y, double z, double landAtX, double landAtY, double landAtZ, SpriteSet provider) {
         super(level, x, y, z);
-        this.sprite = Minecraft.getInstance().particleEngine.textureAtlas.getSprite(ResourceLocation.fromNamespaceAndPath(Cosycritters.MOD_ID, random.nextBoolean() ? "bird_flight_left" : "bird_flight_right"));
+        this.sprite = Minecraft.getInstance().particleEngine.textureAtlas.getSprite(ResourceLocation.fromNamespaceAndPath(Cosycritters.MOD_ID, random.nextBoolean() ? "crow_flying_left" : "crow_flying_right"));
         this.quadSize = 0;
         this.lifetime = 6000;
         this.facing = new Vec3((this.random.nextFloat() - 0.5), this.random.nextFloat(), (this.random.nextFloat() - 0.5)).normalize().multiply(0.5, 0.5, 0.5);
@@ -50,7 +50,7 @@ public class BirdParticle extends TextureSheetParticle {
                 this.quadSize = Mth.lerp((float) spawnAnimationTime / spawnAnimationLength, 0.5F, 0);
             } else {
                 spawnAnimation = false;
-                this.sprite = Minecraft.getInstance().particleEngine.textureAtlas.getSprite(ResourceLocation.fromNamespaceAndPath(Cosycritters.MOD_ID, random.nextBoolean() ? "bird_left" : "bird_right"));
+                this.sprite = Minecraft.getInstance().particleEngine.textureAtlas.getSprite(ResourceLocation.fromNamespaceAndPath(Cosycritters.MOD_ID, random.nextBoolean() ? "crow_left" : "crow_right"));
             }
         }
         else if (flyUpAwayToTheSun) {
@@ -63,7 +63,7 @@ public class BirdParticle extends TextureSheetParticle {
             Vec3 birdPos = new Vec3(this.x, this.y, this.z);
             if (Minecraft.getInstance().cameraEntity.position().distanceTo(birdPos) < 10 && !flyUpAwayToTheSun) {
                 flyUpAwayToTheSun = true;
-                this.sprite = Minecraft.getInstance().particleEngine.textureAtlas.getSprite(ResourceLocation.fromNamespaceAndPath(Cosycritters.MOD_ID, random.nextBoolean() ? "bird_flight_left" : "bird_flight_right"));
+                this.sprite = Minecraft.getInstance().particleEngine.textureAtlas.getSprite(ResourceLocation.fromNamespaceAndPath(Cosycritters.MOD_ID, random.nextBoolean() ? "crow_flying_left" : "crow_flying_right"));
                 this.lifetime = 100;
                 this.age = 0;
                 // for some reason updating the velocity after this sends the bird to its spawn position????
