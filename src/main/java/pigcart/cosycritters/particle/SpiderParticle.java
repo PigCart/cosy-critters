@@ -107,11 +107,11 @@ public class SpiderParticle extends TextureSheetParticle {
             }
         } else {
             // feel down, are we floating?
-            to = from.add(direction.getUnitVec3().multiply(0.2, 0.2, 0.2));
+            to = from.add(new Vec3(direction.step()).multiply(0.2, 0.2, 0.2));
             hitResult = level.clip(new ClipContext(from, to, ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, CollisionContext.empty()));
             if (hitResult.getType().equals(HitResult.Type.MISS)) {
                 // feel down + backwards for a ledge that we've just crawled off
-                to = from.add(direction.getUnitVec3().multiply(0.5, 0.5, 0.5))
+                to = from.add(new Vec3(direction.step()).multiply(0.5, 0.5, 0.5))
                         .add(new Vec3(-xd, -yd, -zd).normalize().multiply(0.5, 0.5, 0.5));
                 hitResult = level.clip(new ClipContext(from, to, ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, CollisionContext.empty()));
                 if (hitResult.getType().equals(HitResult.Type.BLOCK)) {

@@ -4,10 +4,9 @@
   "version": "${version}",
   "name": "Cosy Critters & Creepy Crawlies",
   "description": "Adds adorable atmospheric animals",
-  "authors": [],
-  "contact": {},
+  "authors": ["PigCart"],
   "license": "MIT",
-  "icon": "assets/cosycritters/icon.png",
+  "icon": "assets/cosycritters/textures/particle/crow_right.png",
   "environment": "client",
   "entrypoints": {
     "client": [
@@ -19,8 +18,8 @@
   ],
   "accessWidener": "cosycritters.accesswidener",
   "depends": {
-    "fabricloader": ">=${loader_version}",
+    "fabricloader": "*",
     "fabric": "*",
-    "minecraft": "${minecraft_version}"
+    "minecraft": ">=1.21"
   }
 }

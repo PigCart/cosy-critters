@@ -50,6 +50,7 @@ public class Cosycritters implements ClientModInitializer {
     // jesus or something (when on low health and a totem is on your hotbar but youre not holding it)
     // herobrine (appears at edge of render distance by a wall, walking behind it when you look at him)
     // game of life
+    //FIXME: torch/lantern mixins arent applying in 1.21.0 ???
 
     public static final String MOD_ID = "cosycritters";
     public static SimpleParticleType BIRD;
@@ -135,6 +136,7 @@ public class Cosycritters implements ClientModInitializer {
     }
     public static void trySpawnMoth(Level level, BlockPos blockPos) {
         if (level.isNight() && mothCount < maxMothCount && level.canSeeSky(blockPos)) {
+            System.out.println("hey!");
             level.addParticle(MOTH, blockPos.getX(), blockPos.getY(), blockPos.getZ(), 0, 0, 0);
         }
     }
@@ -144,7 +146,7 @@ public class Cosycritters implements ClientModInitializer {
         blockPos = blockPos.relative(direction);
         BlockState state = level.getBlockState(blockPos);
         if (state.isFaceSturdy(level, blockPos, direction.getOpposite())) {
-            final Vec3 spawnPos = blockPos.getCenter().add(direction.getUnitVec3().multiply(-0.6, -0.6, -0.6));
+            final Vec3 spawnPos = blockPos.getCenter().add(new Vec3(direction.step()).multiply(-0.6f, -0.6f, -0.6f));
             level.addParticle(SPIDER, spawnPos.x, spawnPos.y, spawnPos.z, direction.get3DDataValue(), 0, 0);
         }
     }
