@@ -56,6 +56,7 @@ public class SpiderParticle extends TextureSheetParticle {
         roll += (clockwise ? speed : -speed);
         
         if (!blockPos.equals(BlockPos.containing(x, y, z))) {
+            if (!level.getFluidState(BlockPos.containing(from)).isEmpty()) this.remove();
             blockPos = BlockPos.containing(x, y, z);
             clockwise = random.nextBoolean();
         }

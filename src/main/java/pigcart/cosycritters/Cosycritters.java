@@ -1,6 +1,10 @@
 package pigcart.cosycritters;
 
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
@@ -13,6 +17,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ClipContext;
@@ -78,6 +83,17 @@ public class Cosycritters implements ClientModInitializer {
 
         ClientTickEvents.START_CLIENT_TICK.register(this::onTick);
         ClientPlayConnectionEvents.JOIN.register(this::onJoin);
+
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, buildContext) -> {
+            LiteralArgumentBuilder<FabricClientCommandSource> cmd = ClientCommandManager.literal(MOD_ID)
+                    .executes(ctx -> {
+                        ctx.getSource().sendFeedback(Component.literal(String.format("Birds: %d/%d", birdCount, maxBirdCount)));
+                        ctx.getSource().sendFeedback(Component.literal(String.format("Moths: %d/%d", mothCount, maxMothCount)));
+                        ctx.getSource().sendFeedback(Component.literal(String.format("Daytime: %d", ctx.getSource().getClient().level.dayTime())));
+                        return 0;
+                    });
+            dispatcher.register(cmd);
+        });
     }
 
     private void onJoin(ClientPacketListener clientPacketListener, PacketSender packetSender, Minecraft minecraft) {
@@ -89,6 +105,11 @@ public class Cosycritters implements ClientModInitializer {
         if (minecraft.player != null) {
             tickHatManSpawnConditions(minecraft);
         }
+    }
+
+    public static boolean isDayButNotBroken(Level level) {
+        // level.isDay always returns true in 1.21.0
+        return (level.dayTime() % 24000 < 13000);
     }
 
     private void tickHatManSpawnConditions(Minecraft minecraft) {
@@ -121,7 +142,7 @@ public class Cosycritters implements ClientModInitializer {
         }
     }
     public static void trySpawnBird(BlockState state, Level level, BlockPos blockPos) {
-        if (level.isDay()
+        if (    isDayButNotBroken(level)
                 && birdCount < maxBirdCount
                 && level.getBlockState(blockPos.above()).isAir()
                 && !Minecraft.getInstance().player.position().closerThan(blockPos.getCenter(), 10)
@@ -135,8 +156,10 @@ public class Cosycritters implements ClientModInitializer {
         }
     }
     public static void trySpawnMoth(Level level, BlockPos blockPos) {
-        if (level.isNight() && mothCount < maxMothCount && level.canSeeSky(blockPos)) {
-            System.out.println("hey!");
+        if (    !isDayButNotBroken(level)
+                && mothCount < maxMothCount
+                && level.canSeeSky(blockPos)
+        ) {
             level.addParticle(MOTH, blockPos.getX(), blockPos.getY(), blockPos.getZ(), 0, 0, 0);
         }
     }

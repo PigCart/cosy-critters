@@ -8,11 +8,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import pigcart.cosycritters.Cosycritters;
 
-@Mixin(WebBlock.class)
-public class WebBlockMixin extends BlockMixin {
+@Mixin({LeavesBlock.class, WallBlock.class, CrossCollisionBlock.class})
+public class BirdSpawningBlockMixin extends BlockMixin {
 
     @Override
     public void spawnCritters(BlockState state, Level level, BlockPos pos, RandomSource random) {
-        Cosycritters.trySpawnSpider(level, pos);
+        Cosycritters.trySpawnBird(state, level, pos);
     }
 }

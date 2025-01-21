@@ -4,13 +4,10 @@
   "package": "pigcart.cosycritters.mixin",
   "compatibilityLevel": "JAVA_8",
   "client": [
-    "CrossCollisionBlockMixin",
-    "LeavesBlockMixin",
-    "WallBlockMixin",
-    "BaseTorchBlockMixin",
-    "LanternBlockMixin",
-    "TorchBlockMixin",
-    "WallTorchBlockMixin",
+    "BlockMixin",
+    "BlocksThatOverrideThePreviousMixin",
+    "MothSpawningBlockMixin",
+    "BirdSpawningBlockMixin",
     "WebBlockMixin"
   ],
   "injectors": {
