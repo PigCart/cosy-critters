@@ -65,7 +65,7 @@ public class Cosycritters implements ClientModInitializer {
 
     private static boolean wasSleeping = false;
     public static int birdCount = 0;
-    public static int maxBirdCount = 3;
+    public static int maxBirdCount = 10;
     public static int mothCount = 0;
     public static int maxMothCount = 10;
     public static ArrayList<MothParticle> moths = new ArrayList<>();
