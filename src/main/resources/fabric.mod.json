@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "cosycritters",
+  "id": "${mod_id}",
   "version": "${version}",
   "name": "Cosy Critters & Creepy Crawlies",
   "description": "Adds adorable atmospheric animals",
@@ -20,6 +20,6 @@
   "depends": {
     "fabricloader": "*",
     "fabric": "*",
-    "minecraft": [">=1.21.4", ">=1.21"]
+    "minecraft": [">=${lowest_minecraft_version}"]
   }
 }

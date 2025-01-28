@@ -1,6 +1,5 @@
 package pigcart.cosycritters.particle;
 
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Camera;
@@ -17,8 +16,9 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
+import pigcart.cosycritters.RotationOverride;
 
-public class SpiderParticle extends TextureSheetParticle {
+public class SpiderParticle extends TextureSheetParticle implements RotationOverride {
 
     boolean clockwise;
     BlockPos blockPos;
@@ -26,9 +26,8 @@ public class SpiderParticle extends TextureSheetParticle {
     float speed;
     Vec3 oldPosition;
 
-    private SpiderParticle(ClientLevel level, double x, double y, double z, int direction3DDataValue, SpriteSet provider) {
+    private SpiderParticle(ClientLevel level, double x, double y, double z, int direction3DDataValue) {
         super(level, x, y, z);
-        this.sprite = provider.get(random);
         this.quadSize = (random.nextFloat() * 0.1f) + 0.05f;
         this.speed = quadSize / 2;
         this.roll = Mth.TWO_PI * random.nextFloat();
@@ -200,39 +199,32 @@ public class SpiderParticle extends TextureSheetParticle {
     }
 
     @Override
-    public void render(VertexConsumer buffer, Camera camera, float partialTick) {
-        Quaternionf quaternionf = new Quaternionf(new AxisAngle4f(Mth.HALF_PI, -1, 0, 0));
-        //direction.getRotation();
-        // well i can't figure out whats going on with the coordinates so fuck it switch time
+    public void setParticleRotation(SingleQuadParticle.FacingCameraMode facingCameraMode, Quaternionf quaternionf, Camera camera, float tickPercent) {
         switch (direction) {
             case DOWN -> {
-                quaternionf = new Quaternionf(new AxisAngle4f(Mth.HALF_PI, -1, 0, 0));
+                quaternionf.set(new Quaternionf(new AxisAngle4f(Mth.HALF_PI, -1, 0, 0)));
             }
             case UP -> {
-                quaternionf = new Quaternionf(new AxisAngle4f(Mth.HALF_PI, 1, 0, 0));
+                quaternionf.set(new Quaternionf(new AxisAngle4f(Mth.HALF_PI, 1, 0, 0)));
                 quaternionf.rotateZ(Mth.HALF_PI);
             }
             case NORTH -> {
-                quaternionf = new Quaternionf(new AxisAngle4f(Mth.HALF_PI, 0, 0, -1));
+                quaternionf.set(new Quaternionf(new AxisAngle4f(Mth.HALF_PI, 0, 0, -1)));
             }
             case SOUTH -> {
-                quaternionf = new Quaternionf(new AxisAngle4f(Mth.PI, 0, 1, 0));
+                quaternionf.set(new Quaternionf(new AxisAngle4f(Mth.PI, 0, 1, 0)));
                 // up/down & east/west are just the inverse of each other why is south like this
                 // i feel like theres something obvious that im completely missing
             }
             case WEST -> {
-                quaternionf = new Quaternionf(new AxisAngle4f(Mth.HALF_PI, 0, 1, 0));
+                quaternionf.set(new Quaternionf(new AxisAngle4f(Mth.HALF_PI, 0, 1, 0)));
                 quaternionf.rotateZ(Mth.PI);
             }
             case EAST -> {
-                quaternionf = new Quaternionf(new AxisAngle4f(Mth.HALF_PI, 0, -1, 0));
+                quaternionf.set(new Quaternionf(new AxisAngle4f(Mth.HALF_PI, 0, -1, 0)));
                 quaternionf.rotateZ(Mth.HALF_PI);
             }
         }
-        if (this.roll != 0.0F) {
-            quaternionf.rotateZ(Mth.lerp(partialTick, this.oRoll, this.roll) + Mth.HALF_PI);
-        }
-        this.renderRotatedQuad(buffer, camera, quaternionf, partialTick);
     }
 
     @Override
@@ -241,17 +233,17 @@ public class SpiderParticle extends TextureSheetParticle {
     }
 
     @Environment(EnvType.CLIENT)
-    public static class DefaultFactory implements ParticleProvider<SimpleParticleType> {
+    public static class Provider implements ParticleProvider<SimpleParticleType> {
+        private final SpriteSet spriteSet;
 
-        private final SpriteSet provider;
-
-        public DefaultFactory(SpriteSet provider) {
-            this.provider = provider;
+        public Provider(SpriteSet sprites) {
+            this.spriteSet = sprites;
         }
 
-        @Override
-        public Particle createParticle(SimpleParticleType parameters, ClientLevel level, double x, double y, double z, double direction3DDataValue, double velocityYUnused, double velocityZUnused) {
-            return new SpiderParticle(level, x, y, z, (int)direction3DDataValue, this.provider);
+        public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double direction3DDataValue, double ySpeedUnused, double zSpeedUnused) {
+            SpiderParticle spiderParticle = new SpiderParticle(level, x, y, z, (int)direction3DDataValue);
+            spiderParticle.pickSprite(this.spriteSet);
+            return spiderParticle;
         }
     }
 }

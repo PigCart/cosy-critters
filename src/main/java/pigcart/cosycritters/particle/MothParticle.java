@@ -20,9 +20,9 @@ public class MothParticle extends TextureSheetParticle {
 
     private final Vec3 targetLamp;
 
-    private MothParticle(ClientLevel level, double x, double y, double z, SpriteSet provider) {
+    private MothParticle(ClientLevel level, double x, double y, double z, SpriteSet spriteSet) {
         super(level, x, y, z);
-        this.sprite = provider.get(level.random);
+        this.sprite = spriteSet.get(random);
         this.quadSize = 0.1f;
         this.lifetime = 500;
         this.targetLamp = BlockPos.containing(x, y, z).getCenter();
@@ -121,17 +121,17 @@ public class MothParticle extends TextureSheetParticle {
     }
 
     @Environment(EnvType.CLIENT)
-    public static class DefaultFactory implements ParticleProvider<SimpleParticleType> {
+    public static class Provider implements ParticleProvider<SimpleParticleType> {
 
-        private final SpriteSet provider;
+        private final SpriteSet spriteSet;
 
-        public DefaultFactory(SpriteSet provider) {
-            this.provider = provider;
+        public Provider(SpriteSet spriteSet) {
+            this.spriteSet = spriteSet;
         }
 
         @Override
         public Particle createParticle(SimpleParticleType parameters, ClientLevel level, double x, double y, double z, double veloctiyX, double veloctiyY, double veloctiyZ) {
-            return new MothParticle(level, x, y, z, this.provider);
+            return new MothParticle(level, x, y, z, this.spriteSet);
         }
     }
 }

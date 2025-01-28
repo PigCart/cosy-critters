@@ -8,7 +8,8 @@
     "BlocksThatOverrideThePreviousMixin",
     "MothSpawningBlockMixin",
     "BirdSpawningBlockMixin",
-    "WebBlockMixin"
+    "WebBlockMixin",
+    "SingleQuadParticleMixin"
   ],
   "injectors": {
     "defaultRequire": 1

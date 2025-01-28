@@ -65,7 +65,7 @@ public class Cosycritters implements ClientModInitializer {
 
     private static boolean wasSleeping = false;
     public static int birdCount = 0;
-    public static int maxBirdCount = 50;
+    public static int maxBirdCount = 3;
     public static int mothCount = 0;
     public static int maxMothCount = 10;
     public static ArrayList<MothParticle> moths = new ArrayList<>();
@@ -73,13 +73,13 @@ public class Cosycritters implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         BIRD = Registry.register(BuiltInRegistries.PARTICLE_TYPE, ResourceLocation.fromNamespaceAndPath(MOD_ID, "bird"), FabricParticleTypes.simple(true));
-        ParticleFactoryRegistry.getInstance().register(BIRD, BirdParticle.DefaultFactory::new);
+        ParticleFactoryRegistry.getInstance().register(BIRD, BirdParticle.Provider::new);
         HAT_MAN = Registry.register(BuiltInRegistries.PARTICLE_TYPE, ResourceLocation.fromNamespaceAndPath(MOD_ID, "hat_man"), FabricParticleTypes.simple(true));
-        ParticleFactoryRegistry.getInstance().register(HAT_MAN, HatManParticle.DefaultFactory::new);
+        ParticleFactoryRegistry.getInstance().register(HAT_MAN, HatManParticle.Provider::new);
         MOTH = Registry.register(BuiltInRegistries.PARTICLE_TYPE, ResourceLocation.fromNamespaceAndPath(MOD_ID, "moth"), FabricParticleTypes.simple(true));
-        ParticleFactoryRegistry.getInstance().register(MOTH, MothParticle.DefaultFactory::new);
+        ParticleFactoryRegistry.getInstance().register(MOTH, MothParticle.Provider::new);
         SPIDER = Registry.register(BuiltInRegistries.PARTICLE_TYPE, ResourceLocation.fromNamespaceAndPath(MOD_ID, "spider"), FabricParticleTypes.simple(true));
-        ParticleFactoryRegistry.getInstance().register(SPIDER, SpiderParticle.DefaultFactory::new);
+        ParticleFactoryRegistry.getInstance().register(SPIDER, SpiderParticle.Provider::new);
 
         ClientTickEvents.START_CLIENT_TICK.register(this::onTick);
         ClientPlayConnectionEvents.JOIN.register(this::onJoin);
