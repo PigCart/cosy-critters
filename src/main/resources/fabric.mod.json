@@ -10,7 +10,7 @@
   "environment": "client",
   "entrypoints": {
     "client": [
-      "pigcart.cosycritters.Cosycritters"
+      "pigcart.cosycritters.CosyCritters"
     ]
   },
   "mixins": [
