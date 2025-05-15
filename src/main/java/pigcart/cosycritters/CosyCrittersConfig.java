@@ -1,10 +1,9 @@
 package pigcart.cosycritters;
 
 public class CosyCrittersConfig {
-    public boolean enableSniffing = true;
     public int maxBirds = 10;
     public int maxMoths = 10;
-    public int maxSpiders = 5;
+    public int maxSpiders = 10;
 
     public boolean spawnHatman = true;
     public boolean spawnBird = true;

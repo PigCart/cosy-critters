@@ -9,7 +9,8 @@
     "MothSpawningBlockMixin",
     "BirdSpawningBlockMixin",
     "WebBlockMixin",
-    "SingleQuadParticleMixin"
+    "SingleQuadParticleMixin",
+    "ParticleEngineMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -3,7 +3,6 @@ package pigcart.cosycritters;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
@@ -90,7 +89,6 @@ public class CosyCritters implements ClientModInitializer {
         ParticleFactoryRegistry.getInstance().register(SPIDER, SpiderParticle.Provider::new);
 
         ClientTickEvents.START_CLIENT_TICK.register(this::onTick);
-        ClientPlayConnectionEvents.JOIN.register(this::onJoin);
 
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
             dispatcher.register(ClientCommandManager.literal(MOD_ID)
@@ -112,12 +110,6 @@ public class CosyCritters implements ClientModInitializer {
                     )
             );
         });
-    }
-
-    private void onJoin(ClientPacketListener clientPacketListener, PacketSender packetSender, Minecraft minecraft) {
-        birdCount = 0;
-        mothCount = 0;
-        spiderCount = 0;
     }
 
     private void onTick(Minecraft minecraft) {
@@ -173,7 +165,6 @@ public class CosyCritters implements ClientModInitializer {
             Vec3 spawnFrom = pos.add(level.random.nextInt(10) - 5, level.random.nextInt(5), level.random.nextInt(10) - 5);
             if (level.clip(new ClipContext(spawnFrom, pos, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty())).getType().equals(HitResult.Type.MISS)) {
                 level.addParticle(BIRD, spawnFrom.x, spawnFrom.y, spawnFrom.z, pos.x, pos.y, pos.z);
-                birdCount++;
             }
         }
     }
@@ -187,13 +178,11 @@ public class CosyCritters implements ClientModInitializer {
         }
     }
     public static void trySpawnSpider(Level level, BlockPos blockPos) {
-        if (!ConfigManager.getConfig().spawnSpider) return;
+        if (!ConfigManager.getConfig().spawnSpider || spiderCount >= maxSpiderCount) return;
         if (Minecraft.getInstance().player.position().closerThan(blockPos.getCenter(), 2)) return;
         Direction direction = Direction.getRandom(level.random);
         blockPos = blockPos.relative(direction);
         BlockState state = level.getBlockState(blockPos);
-        if (spiderCount >= maxSpiderCount) return;
-        spiderCount++;
         if (state.isFaceSturdy(level, blockPos, direction.getOpposite())) {
             final Vec3 spawnPos = blockPos.getCenter().add(new Vec3(direction.step()).multiply(-0.6f, -0.6f, -0.6f));
             level.addParticle(SPIDER, spawnPos.x, spawnPos.y, spawnPos.z, direction.get3DDataValue(), 0, 0);

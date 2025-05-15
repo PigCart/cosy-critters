@@ -3,6 +3,7 @@ package pigcart.cosycritters.particle;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.BlockPos;
@@ -16,6 +17,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
+import pigcart.cosycritters.CosyCritters;
 import pigcart.cosycritters.RotationOverride;
 
 public class SpiderParticle extends TextureSheetParticle implements RotationOverride {
@@ -37,11 +39,21 @@ public class SpiderParticle extends TextureSheetParticle implements RotationOver
         this.direction = Direction.from3DDataValue(direction3DDataValue);
         this.oldPosition = new Vec3(x, y, z);
         this.hasPhysics = false;
+        CosyCritters.spiderCount++;
+    }
+
+    @Override
+    public void remove() {
+        CosyCritters.spiderCount--;
+        super.remove();
     }
 
     @Override
     public void tick() {
         super.tick();
+        if (!Minecraft.getInstance().cameraEntity.position().closerThan(new Vec3(x, y, z), 32)) {
+            this.remove();
+        }
         Vec3 from = new Vec3(x, y, z);
         if (age % 20 == 0) {
             if (oldPosition.closerThan(from, 0.05)) {
