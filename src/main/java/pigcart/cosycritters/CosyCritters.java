@@ -93,9 +93,12 @@ public class CosyCritters implements ClientModInitializer {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher,registryAccess) -> {
             dispatcher.register(ClientCommandManager.literal(MOD_ID)
                     .then(ClientCommandManager.literal("reload")
-                            .executes(context -> {
+                            .executes(ctx -> {
                                 ConfigManager.loadConfig();
-                                context.getSource().sendFeedback(Component.literal("Cosy Critters Config reloaded."));
+                                maxBirdCount = ConfigManager.getConfig().maxBirds;
+                                maxMothCount = ConfigManager.getConfig().maxMoths;
+                                maxSpiderCount = ConfigManager.getConfig().maxSpiders;
+                                ctx.getSource().sendFeedback(Component.literal("Cosy Critters Config reloaded."));
                                 return 1;
                             })
                     )
