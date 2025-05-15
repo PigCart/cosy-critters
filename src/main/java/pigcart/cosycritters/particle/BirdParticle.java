@@ -9,7 +9,7 @@ import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import pigcart.cosycritters.Cosycritters;
+import pigcart.cosycritters.CosyCritters;
 
 public class BirdParticle extends TextureSheetParticle {
 
@@ -23,18 +23,18 @@ public class BirdParticle extends TextureSheetParticle {
 
     private BirdParticle(ClientLevel level, double x, double y, double z, double landAtX, double landAtY, double landAtZ) {
         super(level, x, y, z);
-        this.setSprite(Minecraft.getInstance().particleEngine.textureAtlas.getSprite(ResourceLocation.fromNamespaceAndPath(Cosycritters.MOD_ID, random.nextBoolean() ? "crow_flying_left" : "crow_flying_right")));
+        this.setSprite(Minecraft.getInstance().particleEngine.textureAtlas.getSprite(ResourceLocation.fromNamespaceAndPath(CosyCritters.MOD_ID, random.nextBoolean() ? "crow_flying_left" : "crow_flying_right")));
         this.quadSize = 0;
         this.lifetime = 6000;
         this.facing = new Vec3((this.random.nextFloat() - 0.5), this.random.nextFloat(), (this.random.nextFloat() - 0.5)).normalize().multiply(0.5, 0.5, 0.5);
         this.spawnAnimationStart = new Vec3(x, y, z);
         this.spawnAnimationEnd = new Vec3(landAtX, landAtY, landAtZ);
-        Cosycritters.birdCount++;
+        CosyCritters.birdCount++;
     }
 
     @Override
     public void remove() {
-        Cosycritters.birdCount--;
+        CosyCritters.birdCount--;
         super.remove();
     }
 
@@ -50,7 +50,7 @@ public class BirdParticle extends TextureSheetParticle {
                 this.quadSize = Mth.lerp((float) spawnAnimationTime / spawnAnimationLength, 0.5F, 0);
             } else {
                 spawnAnimation = false;
-                this.setSprite(Minecraft.getInstance().particleEngine.textureAtlas.getSprite(ResourceLocation.fromNamespaceAndPath(Cosycritters.MOD_ID, random.nextBoolean() ? "crow_left" : "crow_right")));
+                this.setSprite(Minecraft.getInstance().particleEngine.textureAtlas.getSprite(ResourceLocation.fromNamespaceAndPath(CosyCritters.MOD_ID, random.nextBoolean() ? "crow_left" : "crow_right")));
             }
         }
         else if (flyUpAwayToTheSun) {
@@ -63,7 +63,7 @@ public class BirdParticle extends TextureSheetParticle {
             Vec3 birdPos = new Vec3(this.x, this.y, this.z);
             if (Minecraft.getInstance().cameraEntity.position().distanceTo(birdPos) < 10 && !flyUpAwayToTheSun) {
                 flyUpAwayToTheSun = true;
-                this.setSprite(Minecraft.getInstance().particleEngine.textureAtlas.getSprite(ResourceLocation.fromNamespaceAndPath(Cosycritters.MOD_ID, random.nextBoolean() ? "crow_flying_left" : "crow_flying_right")));
+                this.setSprite(Minecraft.getInstance().particleEngine.textureAtlas.getSprite(ResourceLocation.fromNamespaceAndPath(CosyCritters.MOD_ID, random.nextBoolean() ? "crow_flying_left" : "crow_flying_right")));
                 this.lifetime = 100;
                 this.age = 0;
                 // for some reason updating the velocity after this sends the bird to its spawn position????

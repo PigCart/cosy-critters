@@ -14,7 +14,7 @@ import org.joml.AxisAngle4d;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
-import pigcart.cosycritters.Cosycritters;
+import pigcart.cosycritters.CosyCritters;
 
 public class MothParticle extends TextureSheetParticle {
 
@@ -27,12 +27,12 @@ public class MothParticle extends TextureSheetParticle {
         this.lifetime = 500;
         this.targetLamp = BlockPos.containing(x, y, z).getCenter();
         this.xd = 0.5f;
-        Cosycritters.mothCount++;
+        CosyCritters.mothCount++;
     }
 
     @Override
     public void remove() {
-        Cosycritters.mothCount--;
+        CosyCritters.mothCount--;
         super.remove();
     }
 

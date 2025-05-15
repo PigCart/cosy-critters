@@ -7,13 +7,13 @@ import net.minecraft.world.level.block.BaseTorchBlock;
 import net.minecraft.world.level.block.LanternBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
-import pigcart.cosycritters.Cosycritters;
+import pigcart.cosycritters.CosyCritters;
 
 @Mixin({BaseTorchBlock.class, LanternBlock.class})
 public class MothSpawningBlockMixin extends BlockMixin {
 
     @Override
     public void spawnCritters(BlockState state, Level level, BlockPos pos, RandomSource random) {
-        Cosycritters.trySpawnMoth(level, pos);
+        CosyCritters.trySpawnMoth(level, pos);
     }
 }
