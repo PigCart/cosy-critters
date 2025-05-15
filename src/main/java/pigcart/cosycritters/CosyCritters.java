@@ -90,7 +90,7 @@ public class CosyCritters implements ClientModInitializer {
 
         ClientTickEvents.START_CLIENT_TICK.register(this::onTick);
 
-        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher,registryAccess) -> {
             dispatcher.register(ClientCommandManager.literal(MOD_ID)
                     .then(ClientCommandManager.literal("reload")
                             .executes(context -> {
