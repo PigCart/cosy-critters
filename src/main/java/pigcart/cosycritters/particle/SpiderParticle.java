@@ -44,7 +44,9 @@ public class SpiderParticle extends TextureSheetParticle implements RotationOver
 
     @Override
     public void remove() {
-        CosyCritters.spiderCount--;
+        if (!this.removed) {
+            CosyCritters.spiderCount = Math.max(0, CosyCritters.spiderCount - 1);
+        }
         super.remove();
     }
 

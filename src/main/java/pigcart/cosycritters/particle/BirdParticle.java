@@ -34,7 +34,9 @@ public class BirdParticle extends TextureSheetParticle {
 
     @Override
     public void remove() {
-        CosyCritters.birdCount--;
+        if (!this.removed) {
+            CosyCritters.birdCount = Math.max(0, CosyCritters.birdCount - 1);
+        }
         super.remove();
     }
 

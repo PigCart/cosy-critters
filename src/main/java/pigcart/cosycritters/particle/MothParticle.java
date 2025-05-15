@@ -32,7 +32,9 @@ public class MothParticle extends TextureSheetParticle {
 
     @Override
     public void remove() {
-        CosyCritters.mothCount--;
+        if (!this.removed) {
+            CosyCritters.mothCount = Math.max(0, CosyCritters.mothCount - 1);
+        }
         super.remove();
     }
 
