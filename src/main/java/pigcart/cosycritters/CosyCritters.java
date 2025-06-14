@@ -164,7 +164,12 @@ public class CosyCritters implements ClientModInitializer {
                 && !Minecraft.getInstance().player.position().closerThan(blockPos.getCenter(), 10)
         ) {
             Vec3 pos = blockPos.getCenter();
-            pos = state.getCollisionShape(level, blockPos).clip(pos.add(0, 2, 0), pos.add(0, -0.6, 0), blockPos).getLocation();
+            // clip method explicitly annotates it might return null value
+            // if not handled, it might cause NPE, which will result in 
+            // client crash
+            final var hitResult = state.getCollisionShape(level, blockPos).clip(pos.add(0, 2, 0), pos.add(0, -0.6, 0), blockPos);
+            if (hitResult == null) return;
+            pos = hitResult.getLocation();
             Vec3 spawnFrom = pos.add(level.random.nextInt(10) - 5, level.random.nextInt(5), level.random.nextInt(10) - 5);
             if (level.clip(new ClipContext(spawnFrom, pos, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty())).getType().equals(HitResult.Type.MISS)) {
                 level.addParticle(BIRD, spawnFrom.x, spawnFrom.y, spawnFrom.z, pos.x, pos.y, pos.z);
