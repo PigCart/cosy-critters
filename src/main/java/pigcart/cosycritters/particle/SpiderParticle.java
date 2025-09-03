@@ -1,26 +1,27 @@
 package pigcart.cosycritters.particle;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleGroup;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.CollisionContext;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
-import pigcart.cosycritters.CosyCritters;
-import pigcart.cosycritters.RotationOverride;
+import pigcart.cosycritters.Util;
+import pigcart.cosycritters.config.ConfigManager;
 
-public class SpiderParticle extends TextureSheetParticle implements RotationOverride {
+import java.util.Optional;
+
+public class SpiderParticle extends CustomRenderParticle {
 
     boolean clockwise;
     BlockPos blockPos;
@@ -39,20 +40,19 @@ public class SpiderParticle extends TextureSheetParticle implements RotationOver
         this.direction = Direction.from3DDataValue(direction3DDataValue);
         this.oldPosition = new Vec3(x, y, z);
         this.hasPhysics = false;
-        CosyCritters.spiderCount++;
+        // game crashes if a sprite isnt set in constructor
+        this.setSprite(Util.getSprite("spider_crawling_" + age % 2));
     }
 
     @Override
-    public void remove() {
-        if (!this.removed) {
-            CosyCritters.spiderCount = Math.max(0, CosyCritters.spiderCount - 1);
-        }
-        super.remove();
+    public Optional<ParticleGroup> getParticleGroup() {
+        return Optional.of(ConfigManager.spiderGroup);
     }
 
     @Override
     public void tick() {
         super.tick();
+        this.setSprite(Util.getSprite("spider_crawling_" + age % 2));
         if (!Minecraft.getInstance().cameraEntity.position().closerThan(new Vec3(x, y, z), 32)) {
             this.remove();
         }
@@ -75,7 +75,7 @@ public class SpiderParticle extends TextureSheetParticle implements RotationOver
         }
         // feel forwards for a block face to crawl onto
         Vec3 to = from.add(new Vec3(xd, yd, zd).normalize().multiply(quadSize / 2, quadSize / 2, quadSize / 2));
-        BlockHitResult hitResult = level.clip(new ClipContext(from, to, ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, CollisionContext.empty()));
+        BlockHitResult hitResult = level.clip(new ClipContext(from, to, ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, Util.getCollisionContext()));
         if (hitResult.getType().equals(HitResult.Type.BLOCK)) {
             // reorient
             Direction oldDirection = direction;
@@ -122,12 +122,12 @@ public class SpiderParticle extends TextureSheetParticle implements RotationOver
         } else {
             // feel down, are we floating?
             to = from.add(new Vec3(direction.step()).multiply(0.2, 0.2, 0.2));
-            hitResult = level.clip(new ClipContext(from, to, ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, CollisionContext.empty()));
+            hitResult = level.clip(new ClipContext(from, to, ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, Util.getCollisionContext()));
             if (hitResult.getType().equals(HitResult.Type.MISS)) {
                 // feel down + backwards for a ledge that we've just crawled off
                 to = from.add(new Vec3(direction.step()).multiply(0.5, 0.5, 0.5))
                         .add(new Vec3(-xd, -yd, -zd).normalize().multiply(0.5, 0.5, 0.5));
-                hitResult = level.clip(new ClipContext(from, to, ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, CollisionContext.empty()));
+                hitResult = level.clip(new ClipContext(from, to, ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, Util.getCollisionContext()));
                 if (hitResult.getType().equals(HitResult.Type.BLOCK)) {
                     if (direction != hitResult.getDirection().getOpposite()) {
                         // reorient
@@ -213,32 +213,23 @@ public class SpiderParticle extends TextureSheetParticle implements RotationOver
     }
 
     @Override
-    public void setParticleRotation(SingleQuadParticle.FacingCameraMode facingCameraMode, Quaternionf quaternionf, Camera camera, float tickPercent) {
-        switch (direction) {
-            case DOWN -> {
-                quaternionf.set(new Quaternionf(new AxisAngle4f(Mth.HALF_PI, -1, 0, 0)));
-            }
-            case UP -> {
-                quaternionf.set(new Quaternionf(new AxisAngle4f(Mth.HALF_PI, 1, 0, 0)));
-                quaternionf.rotateZ(Mth.HALF_PI);
-            }
-            case NORTH -> {
-                quaternionf.set(new Quaternionf(new AxisAngle4f(Mth.HALF_PI, 0, 0, -1)));
-            }
-            case SOUTH -> {
-                quaternionf.set(new Quaternionf(new AxisAngle4f(Mth.PI, 0, 1, 0)));
-                // up/down & east/west are just the inverse of each other why is south like this
-                // i feel like theres something obvious that im completely missing
-            }
-            case WEST -> {
-                quaternionf.set(new Quaternionf(new AxisAngle4f(Mth.HALF_PI, 0, 1, 0)));
-                quaternionf.rotateZ(Mth.PI);
-            }
-            case EAST -> {
-                quaternionf.set(new Quaternionf(new AxisAngle4f(Mth.HALF_PI, 0, -1, 0)));
-                quaternionf.rotateZ(Mth.HALF_PI);
-            }
-        }
+    public void render(VertexConsumer vertexConsumer, Camera camera, float tickPercent) {
+        float x = (float)(Mth.lerp(tickPercent, this.xo, this.x) - camera.getPosition().x());
+        float y = (float)(Mth.lerp(tickPercent, this.yo, this.y) - camera.getPosition().y());
+        float z = (float)(Mth.lerp(tickPercent, this.zo, this.z) - camera.getPosition().z());
+
+        Quaternionf quaternionf = switch (direction) {
+            case DOWN  -> new Quaternionf(new AxisAngle4f(Mth.HALF_PI,-1, 0, 0));
+            case UP    -> new Quaternionf(new AxisAngle4f(Mth.HALF_PI, 1, 0, 0)).rotateZ(Mth.HALF_PI);
+            case WEST  -> new Quaternionf(new AxisAngle4f(Mth.HALF_PI, 0, 1, 0)).rotateZ(Mth.PI);
+            case EAST  -> new Quaternionf(new AxisAngle4f(Mth.HALF_PI, 0,-1, 0)).rotateZ(Mth.HALF_PI);
+            case NORTH -> new Quaternionf(new AxisAngle4f(Mth.HALF_PI, 0, 0,-1));
+            case SOUTH -> new Quaternionf(new AxisAngle4f(Mth.PI,      0, 1, 0));
+            // up/down & east/west are just the inverse of each other why is south like this
+            // i feel like theres something obvious that im completely missing
+        };
+        quaternionf.rotateZ(Mth.lerp(tickPercent, this.oRoll, this.roll));
+        this.renderRotatedQuad(vertexConsumer, quaternionf, x, y, z, tickPercent);
     }
 
     @Override
@@ -246,18 +237,13 @@ public class SpiderParticle extends TextureSheetParticle implements RotationOver
         return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
     }
 
-    @Environment(EnvType.CLIENT)
     public static class Provider implements ParticleProvider<SimpleParticleType> {
-        private final SpriteSet spriteSet;
 
         public Provider(SpriteSet sprites) {
-            this.spriteSet = sprites;
         }
 
         public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double direction3DDataValue, double ySpeedUnused, double zSpeedUnused) {
-            SpiderParticle spiderParticle = new SpiderParticle(level, x, y, z, (int)direction3DDataValue);
-            spiderParticle.pickSprite(this.spriteSet);
-            return spiderParticle;
+            return new SpiderParticle(level, x, y, z, (int)direction3DDataValue);
         }
     }
 }

@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "name": "${mod_name}",
+  "version": "${mod_version}",
+  "description": "${mod_description}",
+  "authors": [
+    "${mod_author}"
+  ],
+  "contact": {
+    "sources": "https://github.com/PigCart/cosy-critters",
+    "issues": "${mod_issue_tracker}",
+    "homepage": "https://modrinth.com/mod/cosy-critters"
+  },
+  "license": "${mod_license}",
+  "icon": "${mod_icon}",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "pigcart.${mod_id}.loaders.fabric.FabricEntrypoint"
+    ],
+    "modmenu": [
+      "pigcart.${mod_id}.loaders.fabric.ModMenuEntrypoint"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.12.8",
+    "fabric-api": "*",
+    "yet_another_config_lib_v3": "*",
+    "minecraft": "${version_range}"
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "https://pigc.art/discord"
+      }
+    },
+    "mc-publish": {
+      "dependencies": [
+        "fabric(required){modrinth:P7dR8mSH}{curseforge:306612}#(ignore:github)",
+        "modmenu(recommended){modrinth:mOgUt4GM}{curseforge:308702}#(ignore:github)",
+        "yacl(required){modrinth:1eAoo2KR}{curseforge:667299}#(ignore:github)"
+      ]
+    }
+  }
+}

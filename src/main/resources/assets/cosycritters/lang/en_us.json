@@ -1,0 +1,12 @@
+{
+  "cosycritters.title": "Cosy Critters & Creepy Crawlies Configuration",
+  "cosycritters.ModConfig.maxBirds": "Amount of birds",
+  "cosycritters.ModConfig.maxMoths": "Amount of moths",
+  "cosycritters.ModConfig.maxSpiders": "Amount of spiders",
+  "cosycritters.ModConfig.spawnHatman": "Spawn Hat Man",
+  "cosycritters.ModConfig.spawnBird": "Spawn birds",
+  "cosycritters.ModConfig.spawnMoth": "Spawn moths",
+  "cosycritters.ModConfig.spawnSpider": "Spawn spiders",
+  "cosycritters.ModConfig.birdDisturbDistance": "Bird disturbance distance",
+  "cosycritters.ModConfig.birdDisturbDistance.description": "Birds fly away if you get closer than this"
+}

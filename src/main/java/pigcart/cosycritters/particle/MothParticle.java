@@ -1,12 +1,11 @@
 package pigcart.cosycritters.particle;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleGroup;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
@@ -15,8 +14,11 @@ import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import pigcart.cosycritters.CosyCritters;
+import pigcart.cosycritters.config.ConfigManager;
 
-public class MothParticle extends TextureSheetParticle {
+import java.util.Optional;
+
+public class MothParticle extends CustomRenderParticle {
 
     private final Vec3 targetLamp;
 
@@ -27,15 +29,11 @@ public class MothParticle extends TextureSheetParticle {
         this.lifetime = 500;
         this.targetLamp = BlockPos.containing(x, y, z).getCenter();
         this.xd = 0.5f;
-        CosyCritters.mothCount++;
     }
 
     @Override
-    public void remove() {
-        if (!this.removed) {
-            CosyCritters.mothCount = Math.max(0, CosyCritters.mothCount - 1);
-        }
-        super.remove();
+    public Optional<ParticleGroup> getParticleGroup() {
+        return Optional.of(ConfigManager.mothGroup);
     }
 
     @Override
@@ -88,8 +86,9 @@ public class MothParticle extends TextureSheetParticle {
         Vector3f leftWingOffset = new Vector3f(0, -quadSize * wingsPos, quadSize - (quadSize * Mth.abs(wingsPos)));
         Vector3f rightWingOffset = new Vector3f(0, -quadSize * wingsPos, (quadSize * Mth.abs(wingsPos) - quadSize));
 
+        //TODO copy fixed rotation from particle rain
         Vector3f delta = new Vector3f((float) this.xd, (float) this.yd, (float) this.zd);
-        final float angle = (float) Math.acos(delta.normalize().y);
+        final float angle = (float) Math.acos(new Vector3f(delta).normalize().y);
         Vector3f axis = new Vector3f(-delta.z(), 0, delta.x()).normalize();
         Quaternionf quaternion = new Quaternionf(new AxisAngle4f(-angle, axis));
         leftWing.mul(quaternion);
@@ -122,7 +121,6 @@ public class MothParticle extends TextureSheetParticle {
         return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
     }
 
-    @Environment(EnvType.CLIENT)
     public static class Provider implements ParticleProvider<SimpleParticleType> {
 
         private final SpriteSet spriteSet;

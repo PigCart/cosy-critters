@@ -1,0 +1,18 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "pigcart.cosycritters.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+    "access.ParticleEngineAccessor",
+    "yacl.YACLScreenMixin",
+    "level.BlockMixin",
+    "level.BlocksThatOverrideThePreviousMixin",
+    "level.BirdSpawningBlockMixin",
+    "level.WebBlockMixin",
+    "level.ClientLevelMixin"
+  ]${ refmap }
+}
