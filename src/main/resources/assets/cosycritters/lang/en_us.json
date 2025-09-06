@@ -7,6 +7,9 @@
   "cosycritters.ModConfig.spawnBird": "Spawn birds",
   "cosycritters.ModConfig.spawnMoth": "Spawn moths",
   "cosycritters.ModConfig.spawnSpider": "Spawn spiders",
-  "cosycritters.ModConfig.birdDisturbDistance": "Bird disturbance distance",
-  "cosycritters.ModConfig.birdDisturbDistance.description": "Birds fly away if you get closer than this"
+  "cosycritters.ModConfig.birdReactionDistance": "Bird reaction distance",
+  "cosycritters.ModConfig.birdReactionDistance.description": "The distance under which birds will fly away from entities getting too close",
+  "cosycritters.ModConfig.birdReactionSpeed": "Bird reaction speed",
+  "cosycritters.ModConfig.birdReactionSpeed.description": "The delay of a bird deciding to fly away from an entity getting too close. Lower is faster",
+  "cosycritters.ModConfig.birdDespawnDistance": "Bird despawn distance"
 }

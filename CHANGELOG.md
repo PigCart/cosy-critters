@@ -1,3 +1,11 @@
+# v0.1.1
+###### Sep 6, 2025
+- fix birds continuing to perch on blocks that no longer exist
+- fix birds getting stuck on blocks
+- birds will now react to all entities and block updates
+- add farmland to the list of blocks birds will land on
+- add config options for the speed and distance at which birds react
+
 # v0.1.0
 ###### Sep 3, 2025
 - fix crash when birds try to land on a block without collision (ty sametersoylu)
@@ -9,6 +17,7 @@
 - moths now spawn at any light source
 - add checking bird behaviour: birds now look around when perched
 - add directional sprites: birds now visually face left or right depending on the direction theyre flying
+- replace particle tracking with minecraft's built in particle groups
 - remove compatibility workaround for sodium's 'animate only visible textures' feature
   - the mod no longer uses mcmeta animations itself so this was not worth maintaining. resource packs that add animated textures to the mod will not function properly unless this sodium feature is disabled.
 

@@ -51,31 +51,44 @@ public class ConfigManager {
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.FIELD})
-    public @interface Percentage {}
+    public @interface Percentage {
+    }
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.TYPE})
-    public @interface OverrideName { String newName(); }
+    public @interface OverrideName {
+        String newName();
+    }
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.FIELD})
-    public @interface Label {String key();}
+    public @interface Label {
+        String key();
+    }
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.FIELD})
-    public @interface BooleanFormat {String t(); String f();}
+    public @interface BooleanFormat {
+        String t();
+
+        String f();
+    }
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.FIELD})
-    public @interface Group {}
+    public @interface Group {
+    }
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.FIELD})
-    public @interface NoGUI {}
+    public @interface NoGUI {
+    }
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.FIELD})
-    public @interface OnChange {Class<? extends Runnable> runnable();}
+    public @interface OnChange {
+        Class<? extends Runnable> runnable();
+    }
 
     public static class resetParticles implements Runnable {
         @Override
@@ -89,9 +102,12 @@ public class ConfigManager {
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.FIELD})
-    public @interface EditAsString {}
+    public @interface EditAsString {
+    }
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.FIELD})
-    public @interface Dropdown {Class<? extends Supplier<List<String>>> supplier();}
+    public @interface Dropdown {
+        Class<? extends Supplier<List<String>>> supplier();
+    }
 }

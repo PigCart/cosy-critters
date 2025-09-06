@@ -21,7 +21,7 @@ modstitch {
         modId = "cosycritters"
         modName = "Cosy Critters & Creepy Crawlies"
         modDescription = "Adds adorable atmospheric animals"
-        modVersion = "0.1.0+$name"
+        modVersion = "0.1.1+$name"
         modGroup = "pigcart"
         modAuthor = "PigCart"
         modLicense = "MIT"

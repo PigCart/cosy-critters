@@ -8,7 +8,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import pigcart.cosycritters.CosyCritters;
 
-@Mixin({LeavesBlock.class, WallBlock.class, CrossCollisionBlock.class})
+@Mixin({LeavesBlock.class, WallBlock.class, CrossCollisionBlock.class, FarmBlock.class})
 public class BirdSpawningBlockMixin extends BlockMixin {
 
     @Override

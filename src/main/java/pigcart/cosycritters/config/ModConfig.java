@@ -16,6 +16,8 @@ public class ModConfig {
     @OnChange(runnable = resetParticles.class) public boolean spawnMoth = true;
     @OnChange(runnable = resetParticles.class) public boolean spawnSpider = true;
 
-    public int birdDisturbDistance = 10;
+    public int birdReactionDistance = 10;
+    public int birdReactionSpeed = 20;
+    public int birdDespawnDistance = 64;
 }
 

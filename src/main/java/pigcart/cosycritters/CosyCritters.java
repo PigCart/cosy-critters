@@ -119,7 +119,7 @@ public class CosyCritters {
                 && Util.isDay(level)
                 && hasSpace(birdGroup)
                 && level.getBlockState(blockPos.above()).isAir()
-                && !Minecraft.getInstance().player.position().closerThan(blockPos.getCenter(), 10)
+                && !Minecraft.getInstance().player.position().closerThan(blockPos.getCenter(), config.birdReactionDistance)
         ) {
             Vec3 pos = blockPos.getCenter();
             final var hitResult = state.getCollisionShape(level, blockPos).clip(pos.add(0, 2, 0), pos.add(0, -0.6, 0), blockPos);
