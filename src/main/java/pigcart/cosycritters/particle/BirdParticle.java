@@ -45,6 +45,7 @@ public class BirdParticle extends CritterParticle {
 
     private BirdParticle(ClientLevel level, double x, double y, double z, double landAtX, double landAtY, double landAtZ) {
         super(level, x, y, z, Util.getSprite("crow_left"));
+        if (entitiesNearby(new Vec3(landAtX, landAtY, landAtZ))) this.remove();
         this.hasPhysics = false;
         this.quadSize = 0;
         this.lifetime = 6000;
@@ -101,15 +102,18 @@ public class BirdParticle extends CritterParticle {
             setBehaviour(Behaviour.FLY_UP_AWAY_TO_THE_SUN_LIKE_A_FEATHERY_PIECE_OF_GARGBAGE);
         } else if (this.age % config.birdReactionSpeed == 0) {
             Vec3 birdPos = new Vec3(this.x, this.y, this.z);
-            final List<Entity> nearbyEntities = level.getEntitiesOfClass(Entity.class, AABB.ofSize(birdPos,
-                    config.birdReactionDistance, config.birdReactionDistance, config.birdReactionDistance));
-            if (!nearbyEntities.isEmpty()) {
+            if (entitiesNearby(birdPos)) {
                 setBehaviour(Behaviour.FLY_UP_AWAY_TO_THE_SUN_LIKE_A_FEATHERY_PIECE_OF_GARGBAGE);
             }
             else if (!Util.getCameraPos().closerThan(birdPos, config.birdDespawnDistance)) {
                 this.remove();
             }
         }
+    }
+    private boolean entitiesNearby(Vec3 pos) {
+        final List<Entity> nearbyEntities = level.getEntitiesOfClass(Entity.class, AABB.ofSize(pos,
+                config.birdReactionDistance, config.birdReactionDistance, config.birdReactionDistance));
+        return !nearbyEntities.isEmpty();
     }
 
     @Override
