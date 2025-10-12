@@ -2,6 +2,7 @@
 ###### Oct 12, 2025
 - support minecraft 21.9
 - tweak default particle limits
+- fix birds spawning near other entities and flying away repeatedly
 
 # v0.1.1
 ###### Sep 6, 2025
