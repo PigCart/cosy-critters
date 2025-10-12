@@ -4,12 +4,12 @@ import pigcart.cosycritters.config.ConfigManager.NoGUI;
 import pigcart.cosycritters.config.ConfigManager.OnChange;
 import pigcart.cosycritters.config.ConfigManager.resetParticles;
 
-public class ModConfig {
-    @NoGUI public byte configVersion = 0;
+public class ConfigData {
+    @NoGUI public byte configVersion = 1;
 
     @OnChange(runnable = resetParticles.class) public int maxBirds = 10;
-    @OnChange(runnable = resetParticles.class) public int maxMoths = 10;
-    @OnChange(runnable = resetParticles.class) public int maxSpiders = 10;
+    @OnChange(runnable = resetParticles.class) public int maxMoths = 8;
+    @OnChange(runnable = resetParticles.class) public int maxSpiders = 16;
 
     public boolean spawnHatman = true;
     @OnChange(runnable = resetParticles.class) public boolean spawnBird = true;

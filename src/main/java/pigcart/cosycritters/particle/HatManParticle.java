@@ -5,10 +5,10 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.particles.SimpleParticleType;
 
-public class HatManParticle extends TextureSheetParticle {
+public class HatManParticle extends CritterParticle {
 
     private HatManParticle(ClientLevel level, double x, double y, double z, SpriteSet spriteSet) {
-        super(level, x, y, z);
+        super(level, x, y, z, spriteSet.get(level.random));
         this.sprite = spriteSet.get(this.random);
         this.quadSize = 1F;
         this.lifetime = 6000;
@@ -20,21 +20,21 @@ public class HatManParticle extends TextureSheetParticle {
         if (!Minecraft.getInstance().player.isSleeping()) this.remove();
     }
 
+    //? if >= 1.21.9 {
+    /*@Override
+    protected Layer getLayer() {
+        return Layer.TRANSLUCENT;
+    }
+    *///?} else {
     @Override
     public ParticleRenderType getRenderType() {
         return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
+     //?}
 
-    public static class Provider implements ParticleProvider<SimpleParticleType> {
-
-        private final SpriteSet spriteSet;
-
-        public Provider(SpriteSet spriteSet) {
-            this.spriteSet = spriteSet;
-        }
-
-        @Override
-        public Particle createParticle(SimpleParticleType parameters, ClientLevel level, double x, double y, double z, double velocityX, double velocityY, double velocityZ) {
+    public static class Provider extends CritterProvider {
+        public Provider(SpriteSet spriteSet) {super(spriteSet);}
+        public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double velocityX, double velocityY, double velocityZ) {
             return new HatManParticle(level, x, y, z, this.spriteSet);
         }
     }

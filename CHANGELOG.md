@@ -1,3 +1,8 @@
+# v0.1.2
+###### Oct 12, 2025
+- support minecraft 21.9
+- tweak default particle limits
+
 # v0.1.1
 ###### Sep 6, 2025
 - fix birds continuing to perch on blocks that no longer exist

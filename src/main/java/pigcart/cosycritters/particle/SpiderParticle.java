@@ -7,7 +7,11 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+//? if >=1.21.9 {
+/*import net.minecraft.core.particles.ParticleLimit;
+*///?} else {
 import net.minecraft.core.particles.ParticleGroup;
+//?}
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.ClipContext;
@@ -21,7 +25,7 @@ import pigcart.cosycritters.config.ConfigManager;
 
 import java.util.Optional;
 
-public class SpiderParticle extends CustomRenderParticle {
+public class SpiderParticle extends ComplexCritterParticle {
 
     boolean clockwise;
     BlockPos blockPos;
@@ -30,7 +34,7 @@ public class SpiderParticle extends CustomRenderParticle {
     Vec3 oldPosition;
 
     private SpiderParticle(ClientLevel level, double x, double y, double z, int direction3DDataValue) {
-        super(level, x, y, z);
+        super(level, x, y, z, Util.getSprite("spider_crawling_0"));
         this.quadSize = (random.nextFloat() * 0.1f) + 0.05f;
         this.speed = quadSize / 2;
         this.roll = Mth.TWO_PI * random.nextFloat();
@@ -40,12 +44,14 @@ public class SpiderParticle extends CustomRenderParticle {
         this.direction = Direction.from3DDataValue(direction3DDataValue);
         this.oldPosition = new Vec3(x, y, z);
         this.hasPhysics = false;
-        // game crashes if a sprite isnt set in constructor
-        this.setSprite(Util.getSprite("spider_crawling_" + age % 2));
     }
 
     @Override
+    //? if >=1.21.9 {
+    /*public Optional<ParticleLimit> getParticleLimit() {
+    *///?} else {
     public Optional<ParticleGroup> getParticleGroup() {
+    //?}
         return Optional.of(ConfigManager.spiderGroup);
     }
 
@@ -53,7 +59,7 @@ public class SpiderParticle extends CustomRenderParticle {
     public void tick() {
         super.tick();
         this.setSprite(Util.getSprite("spider_crawling_" + age % 2));
-        if (!Minecraft.getInstance().cameraEntity.position().closerThan(new Vec3(x, y, z), 32)) {
+        if (!Util.getCameraPos().closerThan(new Vec3(x, y, z), 32)) {
             this.remove();
         }
         Vec3 from = new Vec3(x, y, z);
@@ -213,7 +219,7 @@ public class SpiderParticle extends CustomRenderParticle {
     }
 
     @Override
-    public void render(VertexConsumer vertexConsumer, Camera camera, float tickPercent) {
+    public <T> void renderCustom(T renderInfo, Camera camera, float tickPercent) {
         float x = (float)(Mth.lerp(tickPercent, this.xo, this.x) - camera.getPosition().x());
         float y = (float)(Mth.lerp(tickPercent, this.yo, this.y) - camera.getPosition().y());
         float z = (float)(Mth.lerp(tickPercent, this.zo, this.z) - camera.getPosition().z());
@@ -225,25 +231,15 @@ public class SpiderParticle extends CustomRenderParticle {
             case EAST  -> new Quaternionf(new AxisAngle4f(Mth.HALF_PI, 0,-1, 0)).rotateZ(Mth.HALF_PI);
             case NORTH -> new Quaternionf(new AxisAngle4f(Mth.HALF_PI, 0, 0,-1));
             case SOUTH -> new Quaternionf(new AxisAngle4f(Mth.PI,      0, 1, 0));
-            // up/down & east/west are just the inverse of each other why is south like this
-            // i feel like theres something obvious that im completely missing
         };
         quaternionf.rotateZ(Mth.lerp(tickPercent, this.oRoll, this.roll));
-        this.renderRotatedQuad(vertexConsumer, quaternionf, x, y, z, tickPercent);
+        this.renderCustomQuad(renderInfo, quaternionf, x, y, z, tickPercent);
     }
 
-    @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
-    }
-
-    public static class Provider implements ParticleProvider<SimpleParticleType> {
-
-        public Provider(SpriteSet sprites) {
-        }
-
-        public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double direction3DDataValue, double ySpeedUnused, double zSpeedUnused) {
-            return new SpiderParticle(level, x, y, z, (int)direction3DDataValue);
+    public static class Provider extends CritterProvider {
+        public Provider(SpriteSet spriteSet) {super(spriteSet);}
+        public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double velocityX, double velocityY, double velocityZ) {
+            return new SpiderParticle(level, x, y, z, (int) velocityX);
         }
     }
 }

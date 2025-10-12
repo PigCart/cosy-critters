@@ -1,18 +1,41 @@
 package pigcart.cosycritters.particle;
 
+//? if >=1.21.9 {
+/*import net.minecraft.client.renderer.state.QuadParticleRenderState;
+*///?} else {
 import com.mojang.blaze3d.vertex.VertexConsumer;
+//?}
+import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Mth;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-public abstract class CustomRenderParticle extends TextureSheetParticle {
-    protected CustomRenderParticle(ClientLevel level, double x, double y, double z) {
-        super(level, x, y, z);
-        this.hasPhysics = false;
+public abstract class ComplexCritterParticle extends CritterParticle {
+    protected ComplexCritterParticle(ClientLevel level, double x, double y, double z, TextureAtlasSprite sprite) {
+        super(level, x, y, z, sprite);
     }
+    @Override
+    //? if >= 1.21.9 {
+    /*public void extract(QuadParticleRenderState renderInfo, Camera camera, float tickPercent) {
+        renderCustom(renderInfo, camera, tickPercent);
+    }
+    *///?} else {
+    public void render(VertexConsumer renderInfo, Camera camera, float tickPercent) {
+        renderCustom(renderInfo, camera, tickPercent);
+    }
+     //?}
 
+    public abstract <T> void renderCustom(T renderInfo, Camera camera, float tickPercent);
+
+    protected <T> void renderCustomQuad(T renderInfo, Quaternionf quaternion, float x, float y, float z, float tickPercent) {
+        //? if >= 1.21.9 {
+        /*this.extractRotatedQuad((QuadParticleRenderState) renderInfo, quaternion, x, y, z, tickPercent);
+        *///?} else {
+        this.renderRotatedQuad((VertexConsumer) renderInfo, quaternion, x, y, z, tickPercent);
+        //?}
+    }
     //? if <=1.20.1 {
     protected void renderRotatedQuad(VertexConsumer vertexConsumer, Quaternionf quaternionf, float x, float y, float z, float tickPercent) {
         quaternionf.rotateY(Mth.PI);

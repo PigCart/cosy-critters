@@ -1,11 +1,16 @@
 package pigcart.cosycritters.particle;
 
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.BlockPos;
+//? if >=1.21.9 {
+/*import net.minecraft.core.particles.ParticleLimit;
+import net.minecraft.client.renderer.state.QuadParticleRenderState;
+*///?} else {
 import net.minecraft.core.particles.ParticleGroup;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+//?}
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
@@ -13,18 +18,16 @@ import org.joml.AxisAngle4d;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
-import pigcart.cosycritters.CosyCritters;
 import pigcart.cosycritters.config.ConfigManager;
 
 import java.util.Optional;
 
-public class MothParticle extends CustomRenderParticle {
+public class MothParticle extends ComplexCritterParticle {
 
     private final Vec3 targetLamp;
 
     private MothParticle(ClientLevel level, double x, double y, double z, SpriteSet spriteSet) {
-        super(level, x, y, z);
-        this.sprite = spriteSet.get(random);
+        super(level, x, y, z, spriteSet.get(level.random));
         this.quadSize = 0.1f;
         this.lifetime = 500;
         this.targetLamp = BlockPos.containing(x, y, z).getCenter();
@@ -32,7 +35,11 @@ public class MothParticle extends CustomRenderParticle {
     }
 
     @Override
+    //? if >=1.21.9 {
+    /*public Optional<ParticleLimit> getParticleLimit() {
+    *///?} else {
     public Optional<ParticleGroup> getParticleGroup() {
+    //?}
         return Optional.of(ConfigManager.mothGroup);
     }
 
@@ -71,7 +78,7 @@ public class MothParticle extends CustomRenderParticle {
     }
 
     @Override
-    public void render(VertexConsumer buffer, Camera camera, float partialTick) {
+    public <T> void renderCustom(T renderInfo, Camera camera, float partialTick) {
         Vec3 vec3 = camera.getPosition();
         float x = (float)(Mth.lerp(partialTick, this.xo, this.x) - vec3.x());
         float y = (float)(Mth.lerp(partialTick, this.yo, this.y) - vec3.y());
@@ -86,7 +93,6 @@ public class MothParticle extends CustomRenderParticle {
         Vector3f leftWingOffset = new Vector3f(0, -quadSize * wingsPos, quadSize - (quadSize * Mth.abs(wingsPos)));
         Vector3f rightWingOffset = new Vector3f(0, -quadSize * wingsPos, (quadSize * Mth.abs(wingsPos) - quadSize));
 
-        //TODO copy fixed rotation from particle rain
         Vector3f delta = new Vector3f((float) this.xd, (float) this.yd, (float) this.zd);
         final float angle = (float) Math.acos(new Vector3f(delta).normalize().y);
         Vector3f axis = new Vector3f(-delta.z(), 0, delta.x()).normalize();
@@ -103,8 +109,8 @@ public class MothParticle extends CustomRenderParticle {
         rightWingOffset.add(cameraOffset);
         flipItTurnwaysIfBackfaced(leftWing, leftWingOffset);
         flipItTurnwaysIfBackfaced(rightWing, rightWingOffset);
-        this.renderRotatedQuad(buffer, leftWing, leftWingOffset.x, leftWingOffset.y, leftWingOffset.z, partialTick);
-        this.renderRotatedQuad(buffer, rightWing, rightWingOffset.x, rightWingOffset.y, rightWingOffset.z, partialTick);
+        this.renderCustomQuad(renderInfo, leftWing, leftWingOffset.x, leftWingOffset.y, leftWingOffset.z, partialTick);
+        this.renderCustomQuad(renderInfo, rightWing, rightWingOffset.x, rightWingOffset.y, rightWingOffset.z, partialTick);
     }
 
     protected void flipItTurnwaysIfBackfaced(Quaternionf quaternion, Vector3f toCamera) {
@@ -116,21 +122,9 @@ public class MothParticle extends CustomRenderParticle {
         }
     }
 
-    @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
-    }
-
-    public static class Provider implements ParticleProvider<SimpleParticleType> {
-
-        private final SpriteSet spriteSet;
-
-        public Provider(SpriteSet spriteSet) {
-            this.spriteSet = spriteSet;
-        }
-
-        @Override
-        public Particle createParticle(SimpleParticleType parameters, ClientLevel level, double x, double y, double z, double veloctiyX, double veloctiyY, double veloctiyZ) {
+    public static class Provider extends CritterProvider {
+        public Provider(SpriteSet spriteSet) {super(spriteSet);}
+        public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double velocityX, double velocityY, double velocityZ) {
             return new MothParticle(level, x, y, z, this.spriteSet);
         }
     }

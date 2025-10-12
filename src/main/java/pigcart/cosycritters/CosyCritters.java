@@ -1,5 +1,9 @@
 package pigcart.cosycritters;
 
+//? if >=1.21.9 {
+/*import net.minecraft.client.gui.components.debug.DebugScreenEntries;
+import net.minecraft.core.particles.ParticleLimit;
+*///?}
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -17,7 +21,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pigcart.cosycritters.config.ConfigManager;
 import pigcart.cosycritters.config.ConfigScreens;
+import pigcart.cosycritters.mixin.access.ParticleEngineAccessor;
 
+import java.util.List;
 import java.util.Optional;
 
 import static pigcart.cosycritters.Util.*;
@@ -51,8 +57,25 @@ public class CosyCritters {
 
     private static boolean wasSleeping = false;
 
+    private static List<String> getDebugStrings() {
+        return List.of(
+                String.format("Birds: %d/%d", getCount(birdGroup), Util.getLimit(birdGroup)),
+                String.format("Moths: %d/%d", getCount(mothGroup), Util.getLimit(mothGroup)),
+                String.format("Spiders: %d/%d", getCount(spiderGroup), Util.getLimit(spiderGroup)),
+                "Tracked: " + ((ParticleEngineAccessor) Minecraft.getInstance().particleEngine).getTrackedParticleCounts().toString()
+        );
+    }
+
     public static void onInitializeClient() {
         ConfigManager.loadConfig();
+
+        //? if >= 1.21.9 {
+        /*DebugScreenEntries.register(
+                Util.getId("particle_stats"),
+                (display, level, levelChunk, levelChunk2) ->
+                        display.addToGroup(Util.getId("particle_tracking"), getDebugStrings())
+        );
+        *///?}
     }
 
     @SuppressWarnings("unchecked")
@@ -64,11 +87,9 @@ public class CosyCritters {
                             Minecraft.getInstance().setScreen(ConfigScreens.generateMainConfigScreen(null)));
                     return 0;
                 })
-                .then(LiteralArgumentBuilder.literal("status")
+                .then(LiteralArgumentBuilder.literal("debug")
                         .executes(ctx -> {
-                            addChatMsg(String.format("Birds: %d/%d", getCount(birdGroup), birdGroup.getLimit()));
-                            addChatMsg(String.format("Moths: %d/%d", getCount(mothGroup), mothGroup.getLimit()));
-                            addChatMsg(String.format("Spiders: %d/%d", getCount(spiderGroup), spiderGroup.getLimit()));
+                            getDebugStrings().forEach(Util::addChatMsg);
                             return 0;
                         })
                 );

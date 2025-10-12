@@ -3,7 +3,11 @@ package pigcart.cosycritters.config;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.client.Minecraft;
+//? if >= 1.21.9 {
+/*import net.minecraft.core.particles.ParticleLimit;
+*///?} else {
 import net.minecraft.core.particles.ParticleGroup;
+//?}
 import pigcart.cosycritters.CosyCritters;
 import pigcart.cosycritters.mixin.access.ParticleEngineAccessor;
 
@@ -18,27 +22,39 @@ import java.util.function.Supplier;
 public class ConfigManager {
     static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     static final String CONFIG_PATH = "config/" + CosyCritters.MOD_ID + ".json";
-    public static ModConfig config;
-    public static ModConfig defaultConfig = new ModConfig();
+    public static ConfigData config;
+    public static ConfigData defaultConfig = new ConfigData();
 
+    //? if >= 1.21.9 {
+    /*public static ParticleLimit mothGroup;
+    public static ParticleLimit birdGroup;
+    public static ParticleLimit spiderGroup;
+    *///?} else {
     public static ParticleGroup mothGroup;
     public static ParticleGroup birdGroup;
     public static ParticleGroup spiderGroup;
+    //?}
 
     public static void loadConfig() {
         File file = new File(CONFIG_PATH);
         try (FileReader reader = new FileReader(file)) {
-            config = GSON.fromJson(reader, ModConfig.class);
+            config = GSON.fromJson(reader, ConfigData.class);
         } catch (IOException e) {
             CosyCritters.LOGGER.error(e.getMessage());
         }
         if (config == null || config.configVersion < defaultConfig.configVersion) {
-            config = new ModConfig();
+            config = new ConfigData();
             saveConfig();
         }
+        //? if >= 1.21.9 {
+        /*mothGroup =   new ParticleLimit(config.maxMoths);
+        birdGroup =   new ParticleLimit(config.maxBirds);
+        spiderGroup = new ParticleLimit(config.maxSpiders);
+        *///?} else {
         mothGroup = new ParticleGroup(config.maxMoths);
         birdGroup = new ParticleGroup(config.maxBirds);
         spiderGroup = new ParticleGroup(config.maxSpiders);
+        //?}
     }
 
     public static void saveConfig() {
@@ -94,9 +110,15 @@ public class ConfigManager {
         @Override
         public void run() {
             ((ParticleEngineAccessor) Minecraft.getInstance().particleEngine).callClearParticles();
+            //? if >= 1.21.9 {
+            /*mothGroup = new ParticleLimit(config.maxMoths);
+            birdGroup = new ParticleLimit(config.maxBirds);
+            spiderGroup = new ParticleLimit(config.maxSpiders);
+            *///?} else {
             mothGroup = new ParticleGroup(config.maxMoths);
             birdGroup = new ParticleGroup(config.maxBirds);
             spiderGroup = new ParticleGroup(config.maxSpiders);
+            //?}
         }
     }
 

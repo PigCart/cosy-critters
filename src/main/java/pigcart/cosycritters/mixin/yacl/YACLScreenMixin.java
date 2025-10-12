@@ -2,8 +2,6 @@ package pigcart.cosycritters.mixin.yacl;
 
 import dev.isxander.yacl3.api.YetAnotherConfigLib;
 import dev.isxander.yacl3.gui.YACLScreen;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -12,8 +10,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import pigcart.cosycritters.CosyCritters;
-import pigcart.cosycritters.config.ConfigScreens;
-import pigcart.cosycritters.config.ModConfig;
 
 @Mixin(YACLScreen.class)
 public abstract class YACLScreenMixin {
