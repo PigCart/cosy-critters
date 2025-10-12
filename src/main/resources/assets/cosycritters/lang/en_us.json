@@ -1,15 +1,15 @@
 {
   "cosycritters.title": "Cosy Critters & Creepy Crawlies Configuration",
-  "cosycritters.ModConfig.maxBirds": "Amount of birds",
-  "cosycritters.ModConfig.maxMoths": "Amount of moths",
-  "cosycritters.ModConfig.maxSpiders": "Amount of spiders",
-  "cosycritters.ModConfig.spawnHatman": "Spawn Hat Man",
-  "cosycritters.ModConfig.spawnBird": "Spawn birds",
-  "cosycritters.ModConfig.spawnMoth": "Spawn moths",
-  "cosycritters.ModConfig.spawnSpider": "Spawn spiders",
-  "cosycritters.ModConfig.birdReactionDistance": "Bird reaction distance",
-  "cosycritters.ModConfig.birdReactionDistance.description": "The distance under which birds will fly away from entities getting too close",
-  "cosycritters.ModConfig.birdReactionSpeed": "Bird reaction speed",
-  "cosycritters.ModConfig.birdReactionSpeed.description": "The delay of a bird deciding to fly away from an entity getting too close. Lower is faster",
-  "cosycritters.ModConfig.birdDespawnDistance": "Bird despawn distance"
+  "cosycritters.ConfigData.maxBirds": "Amount of birds",
+  "cosycritters.ConfigData.maxMoths": "Amount of moths",
+  "cosycritters.ConfigData.maxSpiders": "Amount of spiders",
+  "cosycritters.ConfigData.spawnHatman": "Spawn Hat Man",
+  "cosycritters.ConfigData.spawnBird": "Spawn birds",
+  "cosycritters.ConfigData.spawnMoth": "Spawn moths",
+  "cosycritters.ConfigData.spawnSpider": "Spawn spiders",
+  "cosycritters.ConfigData.birdReactionDistance": "Bird reaction distance",
+  "cosycritters.ConfigData.birdReactionDistance.description": "The distance under which birds will fly away from entities getting too close",
+  "cosycritters.ConfigData.birdReactionSpeed": "Bird reaction speed",
+  "cosycritters.ConfigData.birdReactionSpeed.description": "The delay of a bird deciding to fly away from an entity getting too close. Lower is faster",
+  "cosycritters.ConfigData.birdDespawnDistance": "Bird despawn distance"
 }
