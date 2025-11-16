@@ -2,7 +2,6 @@ package pigcart.cosycritters;
 
 //? if >=1.21.9 {
 /*import net.minecraft.client.gui.components.debug.DebugScreenEntries;
-import net.minecraft.core.particles.ParticleLimit;
 *///?}
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.client.Minecraft;
@@ -15,13 +14,10 @@ import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pigcart.cosycritters.config.ConfigManager;
-import pigcart.cosycritters.config.ConfigScreens;
-import pigcart.cosycritters.mixin.access.ParticleEngineAccessor;
 
 import java.util.List;
 import java.util.Optional;
@@ -55,19 +51,22 @@ public class CosyCritters {
     public static SimpleParticleType MOTH;
     public static SimpleParticleType SPIDER;
 
+    public static int birds = 0;
+    public static int moths = 0;
+    public static int spiders = 0;
+
     private static boolean wasSleeping = false;
 
     private static List<String> getDebugStrings() {
         return List.of(
-                String.format("Birds: %d/%d", getCount(birdGroup), Util.getLimit(birdGroup)),
-                String.format("Moths: %d/%d", getCount(mothGroup), Util.getLimit(mothGroup)),
-                String.format("Spiders: %d/%d", getCount(spiderGroup), Util.getLimit(spiderGroup)),
-                "Tracked: " + ((ParticleEngineAccessor) Minecraft.getInstance().particleEngine).getTrackedParticleCounts().toString()
+                String.format("Birds: %d/%d", birds, config.maxBirds),
+                String.format("Moths: %d/%d", moths, config.maxMoths),
+                String.format("Spiders: %d/%d", spiders, config.maxSpiders)
         );
     }
 
     public static void onInitializeClient() {
-        ConfigManager.loadConfig();
+        ConfigManager.load();
 
         //? if >= 1.21.9 {
         /*DebugScreenEntries.register(
@@ -84,7 +83,7 @@ public class CosyCritters {
                 .executes(ctx -> {
                     // schedule set screen so chat screen can close first
                     Util.schedule(() ->
-                            Minecraft.getInstance().setScreen(ConfigScreens.generateMainConfigScreen(null)));
+                            Minecraft.getInstance().setScreen(screenPlease(null)));
                     return 0;
                 })
                 .then(LiteralArgumentBuilder.literal("debug")
@@ -106,7 +105,7 @@ public class CosyCritters {
     }
 
     private static void tickHatManSpawnConditions(Minecraft minecraft) {
-        if (minecraft.level.dimensionType().moonPhase(minecraft.level.dayTime()) == 4) {
+        if (Util.isNewMoon(minecraft.level)) {
             if (minecraft.player.isSleeping()) {
                 if (!wasSleeping) {
                     trySpawnHatman(minecraft);
@@ -138,11 +137,11 @@ public class CosyCritters {
     public static void trySpawnBird(BlockState state, Level level, BlockPos blockPos) {
         if (    config.spawnBird
                 && Util.isDay(level)
-                && hasSpace(birdGroup)
+                && birds < config.maxBirds
                 && level.getBlockState(blockPos.above()).isAir()
                 && !Minecraft.getInstance().player.position().closerThan(blockPos.getCenter(), config.birdReactionDistance)
         ) {
-            Vec3 pos = blockPos.getCenter();
+            /*Vec3 pos = blockPos.getCenter();
             final var hitResult = state.getCollisionShape(level, blockPos).clip(pos.add(0, 2, 0), pos.add(0, -0.6, 0), blockPos);
             if (hitResult == null) return;
             pos = hitResult.getLocation();
@@ -150,12 +149,12 @@ public class CosyCritters {
             if (isExposed(level, (int) spawnFrom.x, (int) spawnFrom.y, (int) spawnFrom.z)
                     && level.clip(Util.getClipContext(spawnFrom, pos)).getType().equals(HitResult.Type.MISS)) {
                 level.addParticle(BIRD, spawnFrom.x, spawnFrom.y, spawnFrom.z, pos.x, pos.y, pos.z);
-            }
+            }*/
         }
     }
     public static void trySpawnMoth(Level level, BlockPos blockPos) {
         if (    config.spawnMoth
-                && hasSpace(mothGroup)
+                && moths < config.maxMoths
                 && !Util.isDay(level)
                 && level.getBrightness(LightLayer.BLOCK, blockPos) > 13
                 && isExposed(level, blockPos.getX(), blockPos.getY(), blockPos.getZ())
@@ -165,7 +164,7 @@ public class CosyCritters {
     }
     public static void trySpawnSpider(Level level, BlockPos blockPos) {
         if (    config.spawnSpider
-                && hasSpace(spiderGroup)
+                && spiders < config.maxSpiders
                 && !Minecraft.getInstance().player.position().closerThan(blockPos.getCenter(), 2)
         ) {
             if (Minecraft.getInstance().player.position().closerThan(blockPos.getCenter(), 2)) return;

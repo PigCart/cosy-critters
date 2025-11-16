@@ -3,21 +3,18 @@ package pigcart.cosycritters.config;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import pigcart.cosycritters.CosyCritters;
+import pigcart.cosycritters.mixin.access.ParticleEngineAccessor;
+
 //? if >= 1.21.9 {
 /*import net.minecraft.core.particles.ParticleLimit;
 *///?} else {
 import net.minecraft.core.particles.ParticleGroup;
-//?}
-import pigcart.cosycritters.CosyCritters;
-import pigcart.cosycritters.mixin.access.ParticleEngineAccessor;
+ //?}
 
 import java.io.*;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.util.List;
-import java.util.function.Supplier;
 
 public class ConfigManager {
     static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
@@ -25,17 +22,7 @@ public class ConfigManager {
     public static ConfigData config;
     public static ConfigData defaultConfig = new ConfigData();
 
-    //? if >= 1.21.9 {
-    /*public static ParticleLimit mothGroup;
-    public static ParticleLimit birdGroup;
-    public static ParticleLimit spiderGroup;
-    *///?} else {
-    public static ParticleGroup mothGroup;
-    public static ParticleGroup birdGroup;
-    public static ParticleGroup spiderGroup;
-    //?}
-
-    public static void loadConfig() {
+    public static void load() {
         File file = new File(CONFIG_PATH);
         try (FileReader reader = new FileReader(file)) {
             config = GSON.fromJson(reader, ConfigData.class);
@@ -44,20 +31,11 @@ public class ConfigManager {
         }
         if (config == null || config.configVersion < defaultConfig.configVersion) {
             config = new ConfigData();
-            saveConfig();
+            save();
         }
-        //? if >= 1.21.9 {
-        /*mothGroup =   new ParticleLimit(config.maxMoths);
-        birdGroup =   new ParticleLimit(config.maxBirds);
-        spiderGroup = new ParticleLimit(config.maxSpiders);
-        *///?} else {
-        mothGroup = new ParticleGroup(config.maxMoths);
-        birdGroup = new ParticleGroup(config.maxBirds);
-        spiderGroup = new ParticleGroup(config.maxSpiders);
-        //?}
     }
 
-    public static void saveConfig() {
+    public static void save() {
         try (FileWriter writer = new FileWriter(CONFIG_PATH)) {
             GSON.toJson(config, writer);
         } catch (Exception e) {
@@ -65,71 +43,14 @@ public class ConfigManager {
         }
     }
 
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target({ElementType.FIELD})
-    public @interface Percentage {
-    }
-
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target({ElementType.TYPE})
-    public @interface OverrideName {
-        String newName();
-    }
-
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target({ElementType.FIELD})
-    public @interface Label {
-        String key();
-    }
-
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target({ElementType.FIELD})
-    public @interface BooleanFormat {
-        String t();
-
-        String f();
-    }
-
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target({ElementType.FIELD})
-    public @interface Group {
-    }
-
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target({ElementType.FIELD})
-    public @interface NoGUI {
-    }
-
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target({ElementType.FIELD})
-    public @interface OnChange {
-        Class<? extends Runnable> runnable();
+    public static Screen screenPlease(Screen lastScreen) {
+        return new ConfigScreen(lastScreen, config, Component.translatable("cosycritters.title"));
     }
 
     public static class resetParticles implements Runnable {
         @Override
         public void run() {
             ((ParticleEngineAccessor) Minecraft.getInstance().particleEngine).callClearParticles();
-            //? if >= 1.21.9 {
-            /*mothGroup = new ParticleLimit(config.maxMoths);
-            birdGroup = new ParticleLimit(config.maxBirds);
-            spiderGroup = new ParticleLimit(config.maxSpiders);
-            *///?} else {
-            mothGroup = new ParticleGroup(config.maxMoths);
-            birdGroup = new ParticleGroup(config.maxBirds);
-            spiderGroup = new ParticleGroup(config.maxSpiders);
-            //?}
         }
-    }
-
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target({ElementType.FIELD})
-    public @interface EditAsString {
-    }
-
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target({ElementType.FIELD})
-    public @interface Dropdown {
-        Class<? extends Supplier<List<String>>> supplier();
     }
 }

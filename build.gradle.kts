@@ -1,5 +1,5 @@
 plugins {
-    id("dev.isxander.modstitch.base") version "0.7.0-unstable"
+    id("dev.isxander.modstitch.base") version "0.7.1-unstable"
     id("dev.kikugie.stonecutter")
 }
 
@@ -21,7 +21,7 @@ modstitch {
         modId = "cosycritters"
         modName = "Cosy Critters & Creepy Crawlies"
         modDescription = "Adds adorable atmospheric animals"
-        modVersion = "0.1.2+$name"
+        modVersion = "0.2.0+$name"
         modGroup = "pigcart"
         modAuthor = "PigCart"
         modLicense = "MIT"
@@ -31,10 +31,6 @@ modstitch {
         }
 
         replacementProperties.populate {
-            // https://github.com/isXander/modstitch/pull/36
-            // will still crash if another modstitch 0.7 mod is present
-            put("refmap", if (isModDevGradleLegacy) ",\"refmap\": \"unnamed_mod.refmap.json\"" else "")
-
             put("forge_or_neoforge", if (isModDevGradleLegacy) "forge" else "neoforge")
             put("mod_issue_tracker", "https://github.com/pigcart/cosy-critters/issues")
             put("mod_icon", "assets/cosycritters/textures/particle/crow_right.png")
@@ -43,7 +39,8 @@ modstitch {
     }
 
     loom {
-        fabricLoaderVersion = "0.17.2"
+        fabricLoaderVersion = "0.17.3"
+        accessWidener = rootProject.file("src/main/resources/cosycritters.accesswidener")
     }
 
     moddevgradle {
@@ -96,10 +93,4 @@ dependencies {
     }
 
     // Anything else in the dependencies block will be used for all platforms.
-    modstitchModImplementation("dev.isxander:yet-another-config-lib:${property("yacl")}") {
-        // weirdness with kotlinforforge-neoforge
-        isTransitive = false
-    }
-    // yacl moment
-    implementation("org.quiltmc.parsers:gson:0.2.1")
 }

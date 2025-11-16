@@ -1,3 +1,16 @@
+# Changelog
+This project follows [Pride Versioning](https://pridever.org/) ;3
+
+# v0.2.0
+###### in progress
+- added bird flocking behaviour
+  - very configurable - let me know if you find good settings!
+- added bird landing behaviour
+- preliminary mc 21.11(?) support (i wanted to use the Gizmos feature lol)
+- refactors and code changes:
+  - Yet Another Config Library dependency removed as the mod now uses the config screen functionality already present in the base game.
+  - reverted implementation of `ParticleGroup`/`ParticleLimit` due to changes in mc 21.9 making it impossible to create multiple groups with the same limit value.
+
 # v0.1.2
 ###### Oct 12, 2025
 - support minecraft 21.9
@@ -23,7 +36,7 @@
 - moths now spawn at any light source
 - add checking bird behaviour: birds now look around when perched
 - add directional sprites: birds now visually face left or right depending on the direction theyre flying
-- replace particle tracking with minecraft's built in particle groups
+- replace particle tracking with minecraft's built in `ParticleGroup`s
 - remove compatibility workaround for sodium's 'animate only visible textures' feature
   - the mod no longer uses mcmeta animations itself so this was not worth maintaining. resource packs that add animated textures to the mod will not function properly unless this sodium feature is disabled.
 

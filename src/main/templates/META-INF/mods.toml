@@ -27,4 +27,3 @@ side = "CLIENT"
 
 [mc-publish]
 loaders = ["${forge_or_neoforge}"]
-dependencies = ["yacl(required){modrinth:1eAoo2KR}{curseforge:667299}#(ignore:github)"]

@@ -1,13 +1,9 @@
 package pigcart.cosycritters;
 
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-//? if >= 1.21.9 {
-/*import net.minecraft.core.particles.ParticleLimit;
-*///?} else {
-import net.minecraft.core.particles.ParticleGroup;
-//?}
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -16,10 +12,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
-
-//? if >=1.21.9 {
-/*import net.minecraft.data.AtlasIds;
+//? if >= 1.21.11 {
+/*import net.minecraft.world.level.MoonPhase;
 *///?}
+//? if >= 1.21.9 {
+/*import net.minecraft.core.particles.ParticleLimit;
+import net.minecraft.data.AtlasIds;
+*///?} else {
+import net.minecraft.core.particles.ParticleGroup;
+ //?}
 
 import pigcart.cosycritters.mixin.access.ParticleEngineAccessor;
 
@@ -77,36 +78,31 @@ public class Util {
         return level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z) <= y;
     }
 
-    //? if >= 1.21.9 {
-    /*public static boolean hasSpace(ParticleLimit group) {
-    *///?} else {
-    public static boolean hasSpace(ParticleGroup group) {
-         //?}
-        return ((ParticleEngineAccessor) Minecraft.getInstance().particleEngine).callHasSpaceInParticleLimit(group);
-    }
-
-    //? if >= 1.21.9 {
-    /*public static int getCount(ParticleLimit group) {
-    *///?} else {
-    public static int getCount(ParticleGroup group) {
-         //?}
-        return ((ParticleEngineAccessor) Minecraft.getInstance().particleEngine).getTrackedParticleCounts().getInt(group);
-    }
-
-    //? if >= 1.21.9 {
-    /*public static int getLimit(ParticleLimit group) {
-        return group.limit();
-    *///?} else {
-    public static int getLimit(ParticleGroup group) {
-        return group.getLimit();
-    //?}
-    }
-
     public static Vec3 getCameraPos() {
+        return getCameraPos(Minecraft.getInstance().gameRenderer.getMainCamera());
+    }
+
+    public static Vec3 getCameraPos(Camera camera) {
         //? if >= 1.21.9 {
-        /*return Minecraft.getInstance().gameRenderer.getMainCamera().position();
+        /*return camera.position();
         *///?} else {
-        return Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+        return camera.getPosition();
+         //?}
+    }
+
+    public static int getMinY(ClientLevel level) {
+        //? if >= 1.21.9 {
+        /*return level.getMinY();
+         *///?} else {
+        return level.getMinBuildHeight();
+        //?}
+    }
+
+    public static boolean isNewMoon(ClientLevel level) {
+        //? if >=1.21.11 {
+        /*return level.dimensionType().moonPhase(level.dayTime()).equals(MoonPhase.NEW_MOON);
+        *///?} else {
+        return level.dimensionType().moonPhase(level.dayTime()) == 4;
         //?}
     }
 }

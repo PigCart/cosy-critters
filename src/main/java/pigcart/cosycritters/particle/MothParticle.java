@@ -4,10 +4,7 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.BlockPos;
-//? if >=1.21.9 {
-/*import net.minecraft.core.particles.ParticleLimit;
-import net.minecraft.client.renderer.state.QuadParticleRenderState;
-*///?} else {
+//? if <1.21.9 {
 import net.minecraft.core.particles.ParticleGroup;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 //?}
@@ -18,9 +15,8 @@ import org.joml.AxisAngle4d;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
-import pigcart.cosycritters.config.ConfigManager;
-
-import java.util.Optional;
+import pigcart.cosycritters.CosyCritters;
+import pigcart.cosycritters.Util;
 
 public class MothParticle extends ComplexCritterParticle {
 
@@ -32,15 +28,13 @@ public class MothParticle extends ComplexCritterParticle {
         this.lifetime = 500;
         this.targetLamp = BlockPos.containing(x, y, z).getCenter();
         this.xd = 0.5f;
+        CosyCritters.moths++;
     }
 
     @Override
-    //? if >=1.21.9 {
-    /*public Optional<ParticleLimit> getParticleLimit() {
-    *///?} else {
-    public Optional<ParticleGroup> getParticleGroup() {
-    //?}
-        return Optional.of(ConfigManager.mothGroup);
+    public void remove() {
+        CosyCritters.moths--;
+        super.remove();
     }
 
     @Override
@@ -79,7 +73,7 @@ public class MothParticle extends ComplexCritterParticle {
 
     @Override
     public <T> void renderCustom(T renderInfo, Camera camera, float partialTick) {
-        Vec3 vec3 = camera.getPosition();
+        Vec3 vec3 = Util.getCameraPos(camera);
         float x = (float)(Mth.lerp(partialTick, this.xo, this.x) - vec3.x());
         float y = (float)(Mth.lerp(partialTick, this.yo, this.y) - vec3.y());
         float z = (float)(Mth.lerp(partialTick, this.zo, this.z) - vec3.z());

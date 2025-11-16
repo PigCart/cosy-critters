@@ -1,17 +1,10 @@
 package pigcart.cosycritters.particle;
 
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Camera;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-//? if >=1.21.9 {
-/*import net.minecraft.core.particles.ParticleLimit;
-*///?} else {
-import net.minecraft.core.particles.ParticleGroup;
-//?}
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.ClipContext;
@@ -20,10 +13,8 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
+import pigcart.cosycritters.CosyCritters;
 import pigcart.cosycritters.Util;
-import pigcart.cosycritters.config.ConfigManager;
-
-import java.util.Optional;
 
 public class SpiderParticle extends ComplexCritterParticle {
 
@@ -44,15 +35,13 @@ public class SpiderParticle extends ComplexCritterParticle {
         this.direction = Direction.from3DDataValue(direction3DDataValue);
         this.oldPosition = new Vec3(x, y, z);
         this.hasPhysics = false;
+        CosyCritters.spiders++;
     }
 
     @Override
-    //? if >=1.21.9 {
-    /*public Optional<ParticleLimit> getParticleLimit() {
-    *///?} else {
-    public Optional<ParticleGroup> getParticleGroup() {
-    //?}
-        return Optional.of(ConfigManager.spiderGroup);
+    public void remove() {
+        CosyCritters.spiders--;
+        super.remove();
     }
 
     @Override
@@ -165,7 +154,6 @@ public class SpiderParticle extends ComplexCritterParticle {
                             if (oldDirection.equals(Direction.EAST)) roll += Mth.PI;
                         } else if (oldDirection.getAxis() == Direction.Axis.Z) {
                             // from a north or south wall
-                            // i dont understand why the numbers are like this TwT
                             if (direction.equals(Direction.EAST)) {
                                 roll = Mth.HALF_PI;
                             } else if (direction.equals(Direction.UP)) {
@@ -220,9 +208,10 @@ public class SpiderParticle extends ComplexCritterParticle {
 
     @Override
     public <T> void renderCustom(T renderInfo, Camera camera, float tickPercent) {
-        float x = (float)(Mth.lerp(tickPercent, this.xo, this.x) - camera.getPosition().x());
-        float y = (float)(Mth.lerp(tickPercent, this.yo, this.y) - camera.getPosition().y());
-        float z = (float)(Mth.lerp(tickPercent, this.zo, this.z) - camera.getPosition().z());
+        Vec3 camPos = Util.getCameraPos(camera);
+        float x = (float)(Mth.lerp(tickPercent, this.xo, this.x) - camPos.x());
+        float y = (float)(Mth.lerp(tickPercent, this.yo, this.y) - camPos.y());
+        float z = (float)(Mth.lerp(tickPercent, this.zo, this.z) - camPos.z());
 
         Quaternionf quaternionf = switch (direction) {
             case DOWN  -> new Quaternionf(new AxisAngle4f(Mth.HALF_PI,-1, 0, 0));
