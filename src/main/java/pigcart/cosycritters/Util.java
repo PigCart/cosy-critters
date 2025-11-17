@@ -90,14 +90,6 @@ public class Util {
          //?}
     }
 
-    public static int getMinY(ClientLevel level) {
-        //? if >= 1.21.9 {
-        /*return level.getMinY();
-         *///?} else {
-        return level.getMinBuildHeight();
-        //?}
-    }
-
     public static boolean isNewMoon(ClientLevel level) {
         //? if >=1.21.11 {
         /*return level.dimensionType().moonPhase(level.dayTime()).equals(MoonPhase.NEW_MOON);

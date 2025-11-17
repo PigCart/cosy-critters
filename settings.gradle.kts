@@ -1,20 +1,12 @@
 pluginManagement {
     repositories {
-        gradlePluginPortal()
+        mavenLocal()
         mavenCentral()
-
-        // Modstitch
-        maven("https://maven.isxander.dev/releases/")
-
-        // Loom platform
-        maven("https://maven.fabricmc.net/")
-
-        // MDG platform
-        maven("https://maven.neoforged.net/releases/")
-
-        // Stonecutter
-        maven("https://maven.kikugie.dev/releases")
-        maven("https://maven.kikugie.dev/snapshots")
+        gradlePluginPortal()
+        maven("https://maven.fabricmc.net/") { name = "Fabric" }
+        maven("https://maven.kikugie.dev/snapshots") { name = "KikuGie" }
+        maven("https://maven.kikugie.dev/releases") { name = "KikuGie Releases" }
+        maven("https://maven.parchmentmc.org") { name = "ParchmentMC" }
     }
 }
 
@@ -23,25 +15,16 @@ plugins {
 }
 
 stonecutter {
-    kotlinController = true
-    centralScript = "build.gradle.kts"
-
     create(rootProject) {
-        /**
-         * @param mcVersion The base minecraft version.
-         * @param loaders A list of loaders to target, supports "fabric" (1.14+), "neoforge"(1.20.6+), "vanilla"(any) or "forge"(<=1.20.1)
-         */
-        fun mc(mcVersion: String, name: String = mcVersion, loaders: Iterable<String>) =
-            loaders.forEach { vers("$name-$it", mcVersion) }
+        fun mc(version: String, vararg loaders: String) = loaders
+            .forEach { vers("$version-$it", version).buildscript = "build.$it.gradle.kts" }
 
-        //mc("1.21.11", loaders = listOf("fabric"))
-        mc("1.21.9", loaders = listOf("fabric"))
-        mc("1.21.4", loaders = listOf("fabric", "neoforge"))
-        mc("1.21.1", loaders = listOf("fabric", "neoforge"))
-        mc("1.20.1", loaders = listOf("fabric", "forge"))
+        //mc("1.21.11", "fabric")
+        mc("1.21.9", "fabric")
+        mc("1.21.4", "fabric", "neoforge")
+        mc("1.21.1", "fabric", "neoforge")
+        mc("1.20.1", "fabric", "forge")
 
         vcsVersion = "1.20.1-fabric"
     }
 }
-
-rootProject.name = "cosy-critters"

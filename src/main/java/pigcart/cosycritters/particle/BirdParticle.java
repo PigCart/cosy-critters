@@ -62,7 +62,7 @@ public class BirdParticle extends CritterParticle {
         behaviourTime = 0;
         switch (behaviour) {
             case LANDING -> {
-                BlockPos.MutableBlockPos highest = new BlockPos.MutableBlockPos(this.x, Util.getMinY(level), this.z);
+                BlockPos.MutableBlockPos highest = new BlockPos.MutableBlockPos(this.x, Integer.MIN_VALUE, this.z);
                 for (int i = 0; i < 3; i++) {
                     int x = random.nextIntBetweenInclusive((int)this.x - 16, (int)this.x + 16);
                     int z = random.nextIntBetweenInclusive((int)this.z - 16, (int)this.z + 16);

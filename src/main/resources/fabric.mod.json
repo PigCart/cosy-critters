@@ -8,9 +8,9 @@
     "${mod_author}"
   ],
   "contact": {
-    "sources": "https://github.com/PigCart/cosy-critters",
-    "issues": "${mod_issue_tracker}",
-    "homepage": "https://modrinth.com/mod/cosy-critters"
+    "sources": "${mod_sources}",
+    "issues": "${mod_issues}",
+    "homepage": "${mod_homepage}"
   },
   "license": "${mod_license}",
   "icon": "${mod_icon}",

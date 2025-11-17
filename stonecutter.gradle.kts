@@ -1,17 +1,11 @@
 plugins {
     id("dev.kikugie.stonecutter")
+    id("co.uzzu.dotenv.gradle") version "4.0.0"
+    id("fabric-loom") version "1.13-SNAPSHOT" apply false
+    id("net.neoforged.moddev") version "2.0.115" apply false
 }
 stonecutter active "1.20.1-fabric"
 
-allprojects {
-    repositories {
-        mavenCentral()
-        mavenLocal()
-
-        maven("https://maven.neoforged.net/releases")
-        maven("https://maven.fabricmc.net/")
-        maven("https://maven.terraformersmc.com/")
-        maven("https://maven.parchmentmc.org")
-        maven("https://api.modrinth.com/maven")
-    }
+stonecutter parameters {
+    constants.match(node.metadata.project.substringAfterLast('-'), "fabric", "neoforge", "forge")
 }

@@ -1,11 +1,13 @@
 package pigcart.cosycritters.config.widget;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ActiveTextCollector;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractStringWidget;
 import net.minecraft.network.chat.Component;
+//? if >=1.21.11 {
+/*import net.minecraft.client.gui.ActiveTextCollector;
+*///?}
 
 /// Based on the 1.20.1 version of [net.minecraft.client.gui.components.StringWidget], as the alignment functionality was later removed.
 public class LabelWidget extends AbstractStringWidget {

@@ -18,7 +18,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import pigcart.cosycritters.CosyCritters;
-import pigcart.cosycritters.config.ConfigScreens;
+import pigcart.cosycritters.config.ConfigManager;
 import pigcart.cosycritters.particle.*;
 
 @Mod(CosyCritters.MOD_ID)
@@ -63,7 +63,7 @@ public class NeoforgeEntrypoint {
         CosyCritters.onInitializeClient();
         ModLoadingContext.get().registerExtensionPoint(
                 IConfigScreenFactory.class,
-                () -> (modContainer, parent) -> ConfigScreens.generateMainConfigScreen(parent)
+                () -> (modContainer, lastScreen) -> ConfigManager.screenPlease(lastScreen)
         );
     }
 }

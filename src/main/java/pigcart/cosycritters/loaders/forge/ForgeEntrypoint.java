@@ -19,7 +19,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 import pigcart.cosycritters.CosyCritters;
-import pigcart.cosycritters.config.ConfigScreens;
+import pigcart.cosycritters.config.ConfigManager;
 import pigcart.cosycritters.particle.*;
 
 @Mod(CosyCritters.MOD_ID)
@@ -67,7 +67,7 @@ public class ForgeEntrypoint {
         ModLoadingContext.get().registerExtensionPoint(
                 ConfigScreenHandler.ConfigScreenFactory.class,
                 () -> new ConfigScreenHandler.ConfigScreenFactory(
-                        (client, parent) -> ConfigScreens.generateMainConfigScreen(parent)
+                        (client, lastScreen) -> ConfigManager.screenPlease(lastScreen)
                 )
         );
     }

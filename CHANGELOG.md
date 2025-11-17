@@ -10,6 +10,7 @@ This project follows [Pride Versioning](https://pridever.org/) ;3
 - refactors and code changes:
   - Yet Another Config Library dependency removed as the mod now uses the config screen functionality already present in the base game.
   - reverted implementation of `ParticleGroup`/`ParticleLimit` due to changes in mc 21.9 making it impossible to create multiple groups with the same limit value.
+  - replaced modstitch with split build scripts, adapted from [murderspagurder/mod-template-java](https://github.com/murderspagurder/mod-template-java/)
 
 # v0.1.2
 ###### Oct 12, 2025
