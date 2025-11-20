@@ -34,7 +34,7 @@ public class LabelWidget extends AbstractStringWidget {
 
     //? if >=1.21.11 {
     /*public void visitLines(ActiveTextCollector activeTextCollector) {
-        // unused due to overriding renderWidget
+        // abstract method unused due to overriding renderWidget
     }
     *///?}
 

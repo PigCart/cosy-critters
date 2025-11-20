@@ -10,9 +10,7 @@
     "ParticleEngineMixin",
     "access.ParticleEngineAccessor",
     "level.BlockMixin",
-    "level.BlocksThatOverrideThePreviousMixin",
     "level.WebBlockMixin",
     "level.ClientLevelMixin"
-  ],
-  "refmap": "cosycritters.refmap.json"
+  ]
 }

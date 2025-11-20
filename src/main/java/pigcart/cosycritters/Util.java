@@ -5,7 +5,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -14,7 +13,11 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 //? if >= 1.21.11 {
 /*import net.minecraft.world.level.MoonPhase;
-*///?}
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.attribute.EnvironmentAttributes;
+import net.minecraft.client.renderer.LevelRenderer;
+*///?} else
+import net.minecraft.resources.ResourceLocation;
 //? if >= 1.21.9 {
 /*import net.minecraft.core.particles.ParticleLimit;
 import net.minecraft.data.AtlasIds;
@@ -24,14 +27,16 @@ import net.minecraft.core.particles.ParticleGroup;
 
 import pigcart.cosycritters.mixin.access.ParticleEngineAccessor;
 
+// make forge shut up when im trying to keep an eye out for actual errors
+@SuppressWarnings("removal")
 public class Util {
 
-    @SuppressWarnings("removal")
-    public static ResourceLocation getId(String path) {
+
+    public static /*? >=1.21.11 {*//*Identifier*//*?} else {*/ResourceLocation/*?}*/ getId(String path) {
         //? if <=1.20.1 {
         return new ResourceLocation(CosyCritters.MOD_ID, path);
          //?} else {
-        /*return ResourceLocation.fromNamespaceAndPath(CosyCritters.MOD_ID, path);
+        /*return /^? >=1.21.11 {^//^Identifier^//^?} else {^/ResourceLocation/^?}^/.fromNamespaceAndPath(CosyCritters.MOD_ID, path);
         *///?}
     }
 
@@ -66,8 +71,12 @@ public class Util {
     }
 
     public static boolean isDay(Level level) {
+        //? if >=1.21.11 {
+        /*return level.getDayTime() % 24000 < 13000;
+        *///?} else {
         // level.isDay always returns true in 1.21.0
         return level.dayTime() % 24000 < 13000;
+        //?}
     }
 
     public static void addChatMsg(String message) {
@@ -92,7 +101,7 @@ public class Util {
 
     public static boolean isNewMoon(ClientLevel level) {
         //? if >=1.21.11 {
-        /*return level.dimensionType().moonPhase(level.dayTime()).equals(MoonPhase.NEW_MOON);
+        /*return Minecraft.getInstance().gameRenderer.getLevelRenderState().skyRenderState.moonPhase.equals(MoonPhase.NEW_MOON);
         *///?} else {
         return level.dimensionType().moonPhase(level.dayTime()) == 4;
         //?}

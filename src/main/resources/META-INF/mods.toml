@@ -24,3 +24,6 @@ mandatory = true
 versionRange="${version_range}"
 ordering = "NONE"
 side = "CLIENT"
+
+[[mixins]]
+config = "${mod_id}.mixins.json"

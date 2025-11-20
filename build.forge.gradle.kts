@@ -29,7 +29,7 @@ base.archivesName = property("mod.id") as String
 
 repositories {
     mavenLocal()
-    maven("https://maven.minecraftforge.net") { name = "Minecraft Forge" }
+    maven("https://maven.neoforged.net/releases/") { name = "NeoForged" }
     maven("https://maven.parchmentmc.org") { name = "ParchmentMC" }
 }
 
@@ -61,9 +61,15 @@ legacyForge {
     }
 }
 
+mixin {
+    add(sourceSets.main.get(), "${property("mod.id")}.refmap.json")
+    config("${property("mod.id")}.mixins.json")
+}
+
 dependencies {
-    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.0")!!)
-    implementation(jarJar("io.github.llamalad7:mixinextras-forge:0.5.0")!!)
+    compileOnly("io.github.llamalad7:mixinextras-common:0.5.0")
+    implementation("io.github.llamalad7:mixinextras-forge:0.5.0")
+    jarJar("io.github.llamalad7:mixinextras-forge:0.5.0")
 }
 
 tasks {
@@ -85,7 +91,6 @@ tasks {
 
 java {
     withSourcesJar()
-    val javaCompat = JavaVersion.VERSION_17
-    sourceCompatibility = javaCompat
-    targetCompatibility = javaCompat
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }

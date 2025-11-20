@@ -17,9 +17,9 @@ plugins {
 stonecutter {
     create(rootProject) {
         fun mc(version: String, vararg loaders: String) = loaders
-            .forEach { vers("$version-$it", version).buildscript = "build.$it.gradle.kts" }
+            .forEach { version("$version-$it", version).buildscript = "build.$it.gradle.kts" }
 
-        //mc("1.21.11", "fabric")
+        mc("1.21.11", "fabric")
         mc("1.21.9", "fabric")
         mc("1.21.4", "fabric", "neoforge")
         mc("1.21.1", "fabric", "neoforge")

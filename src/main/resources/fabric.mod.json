@@ -23,6 +23,12 @@
       "pigcart.${mod_id}.loaders.fabric.ModMenuEntrypoint"
     ]
   },
+  "mixins": [
+    {
+      "config": "${mod_id}.mixins.json",
+      "environment": "client"
+    }
+  ],
   "depends": {
     "fabricloader": ">=0.12.8",
     "fabric-api": "*",

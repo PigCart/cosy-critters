@@ -11,11 +11,14 @@ displayName = "${mod_name}"
 description = '''${mod_description}'''
 authors = "${mod_author}"
 
+[[mixins]]
+config = "${mod_id}.mixins.json"
+
 [[dependencies.${mod_id}]]
 modId = "neoforge"
 type = "required"
 ordering = "NONE"
-side = "BOTH"
+side = "CLIENT"
 
 
 [[dependencies.${mod_id}]]
