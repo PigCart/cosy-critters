@@ -7,14 +7,19 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Position;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3d;
+import org.joml.Vector3i;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pigcart.cosycritters.config.ConfigManager;
@@ -26,21 +31,17 @@ import static pigcart.cosycritters.Util.*;
 import static pigcart.cosycritters.config.ConfigManager.*;
 
 public class CosyCritters {
-    //TODO: more robust mixins
+    //TODO
     // ants (spiders that walk in a line)
     // flies (attracted to the scene of a death)
-    // fireflies (swamps and plains, they glow)
-    // fire flies (they glow, but aggressively)
-    // fired flies (they are handing out resumes)
-    // fryer flies (they are no longer handing out resumes)
-    // bird flocking behaviour
-    // bird angle-based sprite selection
+    // fireflies {ehhh maybe}
     // a few more common bird types (pigeons, robins)
     // butterflies (moths without a lamp)
     // silverfish swarm (boids, renders in place of silverfish)
     // bee swarm (boids, renders in place of bee)
     // fish maybe?
     // rats/mice
+    // squirrel? (vertical tree rat)
     // game of life
 
     public static final String MOD_ID = "cosycritters";
@@ -70,7 +71,7 @@ public class CosyCritters {
 
         //? if >= 1.21.9 {
         /*DebugScreenEntries.register(
-                Util.getId("particle_stats"),
+                Util.getId("a_stats"),
                 (display, level, levelChunk, levelChunk2) ->
                         display.addToGroup(Util.getId("particle_tracking"), getDebugStrings())
         );
@@ -101,6 +102,7 @@ public class CosyCritters {
     public static void onTick(Minecraft minecraft) {
         if (minecraft.player != null) {
             tickHatManSpawnConditions(minecraft);
+            trySpawnBird(minecraft.level);
         }
     }
 
@@ -134,22 +136,20 @@ public class CosyCritters {
             }
         }
     }
-    public static void trySpawnBird(BlockState state, Level level, BlockPos blockPos) {
+    public static void trySpawnBird(Level level) {
         if (    config.spawnBird
                 && Util.isDay(level)
                 && birds < config.maxBirds
-                && level.getBlockState(blockPos.above()).isAir()
-                && !Minecraft.getInstance().player.position().closerThan(blockPos.getCenter(), config.birdReactionDistance)
         ) {
-            /*Vec3 pos = blockPos.getCenter();
-            final var hitResult = state.getCollisionShape(level, blockPos).clip(pos.add(0, 2, 0), pos.add(0, -0.6, 0), blockPos);
-            if (hitResult == null) return;
-            pos = hitResult.getLocation();
-            Vec3 spawnFrom = pos.add(level.random.nextInt(10) - 5, level.random.nextInt(5), level.random.nextInt(10) - 5);
-            if (isExposed(level, (int) spawnFrom.x, (int) spawnFrom.y, (int) spawnFrom.z)
-                    && level.clip(Util.getClipContext(spawnFrom, pos)).getType().equals(HitResult.Type.MISS)) {
-                level.addParticle(BIRD, spawnFrom.x, spawnFrom.y, spawnFrom.z, pos.x, pos.y, pos.z);
-            }*/
+            Vec3 player = Minecraft.getInstance().player.position();
+            int x = level.random.nextIntBetweenInclusive((int) (player.x - config.bird.despawnDistance), (int) (player.x + config.bird.despawnDistance));
+            int z = level.random.nextIntBetweenInclusive((int) (player.z - config.bird.despawnDistance), (int) (player.z + config.bird.despawnDistance));
+            int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z);
+            if (    Vector3d.distance(x, y, z, player.x, player.y, player.z) > config.bird.reactionDistance
+                    && level.getBiome(BlockPos.containing(x, y, z)).is(BiomeTags.IS_FOREST)
+            ) {
+                level.addParticle(BIRD, x, y, z, 0, 0.5, 0);
+            }
         }
     }
     public static void trySpawnMoth(Level level, BlockPos blockPos) {

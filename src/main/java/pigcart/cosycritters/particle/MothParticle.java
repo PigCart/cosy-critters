@@ -5,7 +5,6 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.BlockPos;
 //? if <1.21.9 {
-import net.minecraft.core.particles.ParticleGroup;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 //?}
 import net.minecraft.core.particles.SimpleParticleType;

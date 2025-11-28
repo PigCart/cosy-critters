@@ -8,12 +8,6 @@ import net.minecraft.network.chat.Component;
 import pigcart.cosycritters.CosyCritters;
 import pigcart.cosycritters.mixin.access.ParticleEngineAccessor;
 
-//? if >= 1.21.9 {
-/*import net.minecraft.core.particles.ParticleLimit;
-*///?} else {
-import net.minecraft.core.particles.ParticleGroup;
- //?}
-
 import java.io.*;
 
 public class ConfigManager {
@@ -36,6 +30,7 @@ public class ConfigManager {
     }
 
     public static void save() {
+        CosyCritters.LOGGER.info("Saving: " + CONFIG_PATH);
         try (FileWriter writer = new FileWriter(CONFIG_PATH)) {
             GSON.toJson(config, writer);
         } catch (Exception e) {

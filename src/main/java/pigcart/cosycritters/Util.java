@@ -14,16 +14,11 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 //? if >= 1.21.11 {
 /*import net.minecraft.world.level.MoonPhase;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.attribute.EnvironmentAttributes;
-import net.minecraft.client.renderer.LevelRenderer;
 *///?} else
 import net.minecraft.resources.ResourceLocation;
 //? if >= 1.21.9 {
-/*import net.minecraft.core.particles.ParticleLimit;
-import net.minecraft.data.AtlasIds;
-*///?} else {
-import net.minecraft.core.particles.ParticleGroup;
- //?}
+/*import net.minecraft.data.AtlasIds;
+*///?}
 
 import pigcart.cosycritters.mixin.access.ParticleEngineAccessor;
 

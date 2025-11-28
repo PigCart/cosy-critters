@@ -17,7 +17,6 @@ public class FabricEntrypoint implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        //TODO
         CosyCritters.BIRD    = registerParticle("bird");
         CosyCritters.HAT_MAN = registerParticle("hat_man");
         CosyCritters.MOTH    = registerParticle("moth");
