@@ -1,3 +1,6 @@
+import org.gradle.kotlin.dsl.accessTransformers
+import org.gradle.kotlin.dsl.from
+
 plugins {
     id("net.neoforged.moddev")
 }
@@ -35,7 +38,11 @@ repositories {
 
 neoForge {
     version = property("deps.neoforge") as String
-    validateAccessTransformers = true
+
+    val accessTransformer = project.file("src/main/resources/META-INF/accesstransformer.cfg")
+    if (accessTransformer.exists()) {
+        accessTransformers.from(accessTransformer.absolutePath)
+    }
 
     if (hasProperty("deps.parchment")) parchment {
         val (mc, ver) = (property("deps.parchment") as String).split(':')

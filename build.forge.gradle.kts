@@ -35,7 +35,11 @@ repositories {
 
 legacyForge {
     version = property("deps.forge") as String
-    validateAccessTransformers = true
+
+    val accessTransformer = project.file("src/main/resources/META-INF/accesstransformer.cfg")
+    if (accessTransformer.exists()) {
+        accessTransformers.from(accessTransformer.absolutePath)
+    }
 
     if (hasProperty("deps.parchment")) parchment {
         val (mc, ver) = (property("deps.parchment") as String).split(':')

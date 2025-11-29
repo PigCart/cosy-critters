@@ -12,5 +12,6 @@
     "level.BlockMixin",
     "level.WebBlockMixin",
     "level.ClientLevelMixin"
-  ]
+  ],
+  "refmap": "cosycritters.refmap.json"
 }
