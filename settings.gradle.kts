@@ -3,10 +3,10 @@ pluginManagement {
         mavenLocal()
         mavenCentral()
         gradlePluginPortal()
-        maven("https://maven.fabricmc.net/") { name = "Fabric" }
-        maven("https://maven.kikugie.dev/snapshots") { name = "KikuGie" }
-        maven("https://maven.kikugie.dev/releases") { name = "KikuGie Releases" }
-        maven("https://maven.parchmentmc.org") { name = "ParchmentMC" }
+        maven("https://maven.fabricmc.net/")
+        maven("https://maven.kikugie.dev/snapshots")
+        maven("https://maven.kikugie.dev/releases")
+        maven("https://maven.parchmentmc.org")
     }
 }
 
@@ -19,7 +19,7 @@ stonecutter {
         fun mc(version: String, vararg loaders: String) = loaders
             .forEach { version("$version-$it", version).buildscript = "build.$it.gradle.kts" }
 
-        mc("1.21.11", "fabric")
+        mc("1.21.11","fabric")
         mc("1.21.9", "fabric")
         mc("1.21.4", "fabric", "neoforge")
         mc("1.21.1", "fabric", "neoforge")

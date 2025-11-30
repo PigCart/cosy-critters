@@ -36,7 +36,7 @@ repositories {
 legacyForge {
     version = property("deps.forge") as String
 
-    val accessTransformer = project.file("src/main/resources/META-INF/accesstransformer.cfg")
+    val accessTransformer = rootProject.file("src/main/resources/META-INF/accesstransformer.cfg")
     if (accessTransformer.exists()) {
         accessTransformers.from(accessTransformer.absolutePath)
     }
@@ -74,6 +74,7 @@ dependencies {
     compileOnly("io.github.llamalad7:mixinextras-common:0.5.0")
     implementation("io.github.llamalad7:mixinextras-forge:0.5.0")
     jarJar("io.github.llamalad7:mixinextras-forge:0.5.0")
+    annotationProcessor("org.spongepowered:mixin:0.8.5:processor")
 }
 
 tasks {
@@ -91,10 +92,13 @@ tasks {
         into(rootProject.layout.buildDirectory.file("libs/${project.property("mod.version")}"))
         dependsOn("build")
     }
+
+    jar {
+        manifest.attributes["MixinConfigs"] = "${project.property("mod.id")}.mixins.json"
+    }
 }
 
 java {
-    withSourcesJar()
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
 }

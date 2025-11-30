@@ -1,6 +1,3 @@
-import org.gradle.kotlin.dsl.accessTransformers
-import org.gradle.kotlin.dsl.from
-
 plugins {
     id("net.neoforged.moddev")
 }
@@ -32,14 +29,14 @@ base.archivesName = property("mod.id") as String
 
 repositories {
     mavenLocal()
-    maven("https://maven.neoforged.net/releases/") { name = "NeoForged" }
-    maven("https://maven.parchmentmc.org") { name = "ParchmentMC" }
+    maven("https://maven.neoforged.net/releases/")
+    maven("https://maven.parchmentmc.org")
 }
 
 neoForge {
     version = property("deps.neoforge") as String
 
-    val accessTransformer = project.file("src/main/resources/META-INF/accesstransformer.cfg")
+    val accessTransformer = rootProject.file("src/main/resources/META-INF/accesstransformer.cfg")
     if (accessTransformer.exists()) {
         accessTransformers.from(accessTransformer.absolutePath)
     }
@@ -66,7 +63,6 @@ neoForge {
             sourceSet(sourceSets["main"])
         }
     }
-    //sourceSets["main"].resources.srcDir("src/main/generated")
 }
 
 tasks {
@@ -87,8 +83,6 @@ tasks {
 }
 
 java {
-    withSourcesJar()
-    val javaCompat = JavaVersion.VERSION_21
-    sourceCompatibility = javaCompat
-    targetCompatibility = javaCompat
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }

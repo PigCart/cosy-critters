@@ -29,8 +29,8 @@ base.archivesName = property("mod.id") as String
 
 repositories {
     mavenLocal()
-    maven("https://maven.parchmentmc.org") { name = "ParchmentMC" }
-    maven("https://maven.terraformersmc.com/") { name = "Terraformers (modmenu)" }
+    maven("https://maven.parchmentmc.org")
+    maven("https://maven.terraformersmc.com/")
 }
 
 loom {
@@ -63,7 +63,6 @@ tasks {
 }
 
 java {
-    withSourcesJar()
     val javaCompat = if (stonecutter.eval(stonecutter.current.version, ">=1.21")) {
         JavaVersion.VERSION_21
     } else {
