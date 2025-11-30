@@ -7,7 +7,6 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Position;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
@@ -19,10 +18,10 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3d;
-import org.joml.Vector3i;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pigcart.cosycritters.config.ConfigManager;
+import pigcart.cosycritters.particle.BirdParticle;
 
 import java.util.List;
 import java.util.Optional;
@@ -52,7 +51,6 @@ public class CosyCritters {
     public static SimpleParticleType MOTH;
     public static SimpleParticleType SPIDER;
 
-    public static int birds = 0;
     public static int moths = 0;
     public static int spiders = 0;
 
@@ -60,7 +58,7 @@ public class CosyCritters {
 
     private static List<String> getDebugStrings() {
         return List.of(
-                String.format("Birds: %d/%d", birds, config.maxBirds),
+                String.format("Birds: %d/%d", BirdParticle.birds.size(), config.maxBirds),
                 String.format("Moths: %d/%d", moths, config.maxMoths),
                 String.format("Spiders: %d/%d", spiders, config.maxSpiders)
         );
@@ -139,7 +137,7 @@ public class CosyCritters {
     public static void trySpawnBird(Level level) {
         if (    config.spawnBird
                 && Util.isDay(level)
-                && birds < config.maxBirds
+                && BirdParticle.birds.size() < config.maxBirds
         ) {
             Vec3 player = Minecraft.getInstance().player.position();
             int x = level.random.nextIntBetweenInclusive((int) (player.x - config.bird.despawnDistance), (int) (player.x + config.bird.despawnDistance));
@@ -155,6 +153,7 @@ public class CosyCritters {
     public static void trySpawnMoth(Level level, BlockPos blockPos) {
         if (    config.spawnMoth
                 && moths < config.maxMoths
+                && level.getBiome(blockPos).is(BiomeTags.IS_OVERWORLD)
                 && !Util.isDay(level)
                 && level.getBrightness(LightLayer.BLOCK, blockPos) > 13
                 && isExposed(level, blockPos.getX(), blockPos.getY(), blockPos.getZ())

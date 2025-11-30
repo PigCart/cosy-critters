@@ -16,6 +16,5 @@ public abstract class ParticleEngineMixin {
         BirdParticle.birds.clear();
         CosyCritters.spiders = 0;
         CosyCritters.moths = 0;
-        CosyCritters.birds = 0;
     }
 }

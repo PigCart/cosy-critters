@@ -1,8 +1,10 @@
 package pigcart.cosycritters.particle;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -49,25 +51,30 @@ public class BirdParticle extends CritterParticle {
         this.target = new Vector3f((this.random.nextFloat() - 0.5F), this.random.nextFloat(), (this.random.nextFloat() - 0.5F)).normalize().mul(0.5F);
         setBehaviour(Behaviour.FLYING);
         birds.add(this);
-        CosyCritters.birds++;
         this.xd = target.x;
         this.yd = target.y;
         this.zd = target.z;
     }
-
     private void setBehaviour(Behaviour behaviour) {
+        setBehaviour(behaviour, true);
+    }
+    private void setBehaviour(Behaviour behaviour, boolean resetBehaviourTime) {
         this.behaviour = behaviour;
-        behaviourTime = 0;
+        if (resetBehaviourTime) behaviourTime = 0;
         switch (behaviour) {
             case LANDING -> {
                 BlockPos.MutableBlockPos highest = new BlockPos.MutableBlockPos(this.x, Integer.MIN_VALUE, this.z);
                 for (int i = 0; i < 3; i++) {
                     int x = random.nextIntBetweenInclusive((int)this.x - 16, (int)this.x + 16);
                     int z = random.nextIntBetweenInclusive((int)this.z - 16, (int)this.z + 16);
-                    int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z);
+                    int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z) - 1;
                     if (y > highest.getY()) highest.set(x, y, z);
                 }
-                this.target = highest.getCenter().toVector3f();
+                if (level.getFluidState(highest).isEmpty()) {
+                    this.target = highest.getCenter().toVector3f();
+                } else {
+                    setBehaviour(Behaviour.FLYING);
+                }
             }
             case PERCHED -> {
                 this.setParticleSpeed(0, 0, 0);
@@ -112,22 +119,36 @@ public class BirdParticle extends CritterParticle {
         return !nearbyEntities.isEmpty();
     }
 
+    private void setFlyingSprite(double speed, double oldSpeed) {
+        if (speed < oldSpeed & y < yo) {
+            this.setSprite(Util.getSprite("crow_flying_%s_1".formatted(getRelativeDirection((float)xd, (float)zd))));
+        } else {
+            this.setSprite(Util.getSprite("crow_flying_%s_%d".formatted(getRelativeDirection((float) xd, (float) zd), (age / 2) % 2)));
+        }
+    }
+
     @Override
     public void remove() {
         birds.remove(this);
-        CosyCritters.birds--;
         super.remove();
     }
 
     @Override
     public void tick() {
         super.tick();
+        if (Double.isNaN(y)) { // not sure what causes this
+            this.remove();
+            /*CosyCritters.LOGGER.error("Removing {} bird with NaN position, previously at: {}, {}, {}, {}m away",
+                    behaviour, (int)xo, (int)yo, (int)zo, (int)Minecraft.getInstance().player.position().distanceTo(new Vec3(xo, yo, zo)));
+        */}
         if (Util.getCameraPos().distanceToSqr(x, y, z) > Mth.square(CONFIG.despawnDistance)) {
             this.remove();
         }
         behaviourTime++;
         switch (behaviour) {
             case FLYING -> {
+                double oldSpeed = Vector3d.length(xd, yd, zd);
+
                 double avgVelX = 0; double avgVelY = 0; double avgVelZ = 0; // alignment - match the velocity of other boids
                 double avgPosX = 0; double avgPosY = 0; double avgPosZ = 0; // cohesion - steer towards center mass of other boids
                 double closeXd = 0; double closeYd = 0; double closeZd = 0; // separation - avoid running into other boids
@@ -175,10 +196,19 @@ public class BirdParticle extends CritterParticle {
                 Vec3 end = new Vec3(x, y, z).add(lineToCast);
                 final BlockHitResult hitResult = level.clip(Util.getClipContext(start, end));
                 if (hitResult.getType() != HitResult.Type.MISS) {
-
                     float factor = CONFIG.blockAvoidanceFactor;
-                    if (hitResult.getLocation().closerThan(start, 1)) factor = 0.5F;
-                    // meh, good enough for now
+                    if (hitResult.getLocation().closerThan(start, 1)) {
+                        if (    hitResult.getDirection() == Direction.UP
+                                && behaviourTime > 60
+                                && level.getFluidState(hitResult.getBlockPos()).isEmpty()
+                        ) {
+                            Vec3 loc = hitResult.getLocation();
+                            this.setPos(loc.x, loc.y + 0.5, loc.z);
+                            setBehaviour(Behaviour.PERCHED);
+                            return;
+                        }
+                        factor = 0.4F; // meh, good enough for now
+                    }
                     xd -= Math.signum(xd) * factor;
                     yd -= Math.signum(yd) * factor;
                     zd -= Math.signum(zd) * factor;
@@ -196,14 +226,14 @@ public class BirdParticle extends CritterParticle {
                     this.zd = (this.zd / speed) * CONFIG.minSpeed;
                 }
 
-                /*if (behaviourTime > config.bird.birdFlightTime) {
+                if (behaviourTime > CONFIG.maxBehaviourTime) {
                     setBehaviour(Behaviour.LANDING);
-                }*/
+                }
 
-                this.setSprite(Util.getSprite("crow_flying_%s_%d".formatted(getRelativeDirection((float)xd, (float)zd), (age / 2) % 2)));
+                setFlyingSprite(speed, oldSpeed);
             }
             case LANDING -> {
-                this.setSprite(Util.getSprite("crow_flying_%s_1".formatted(getRelativeDirection((float)xd, (float)zd))));
+                double oldSpeed = Vector3d.length(xd, yd, zd);
                 Vec3 targetOffset = new Vec3(x - target.x, y - target.y, z - target.z);
                 final float responsiveness = (float) Math.min(CONFIG.landingResponsiveness, targetOffset.length());
 
@@ -219,15 +249,19 @@ public class BirdParticle extends CritterParticle {
                 if (!state.getCollisionShape(level, pos).isEmpty()) {
                     setBehaviour(Behaviour.PERCHED);
                 }
-                //Gizmos.point(new Vec3(target), 0xFFFF0000, 10F);
+                double speed = Vector3d.length(xd, yd, zd);
+                setFlyingSprite(speed, oldSpeed);
             }
             case PERCHED -> {
-                if (random.nextFloat() < 0.01) setBehaviour(Behaviour.CHECKING);
+                if (random.nextFloat() < 0.01) setBehaviour(Behaviour.CHECKING, false);
                 this.setSprite(Util.getSprite("crow_" + getRelativeDirection(target.x, target.z)));
                 reactToDisturbances();
+                if (behaviourTime > CONFIG.maxBehaviourTime) {
+                    setBehaviour(Behaviour.FLYING);
+                }
             }
             case CHECKING -> {
-                if (random.nextFloat() < 0.02) setBehaviour(Behaviour.PERCHED);
+                if (random.nextFloat() < 0.02) setBehaviour(Behaviour.PERCHED, false);
                 this.setSprite(Util.getSprite("crow_checking_" + getRelativeDirection(target.x, target.z)));
                 reactToDisturbances();
             }

@@ -24,13 +24,13 @@ public class ConfigData {
         public int blockAvoidanceDistance = 8;
         public float blockAvoidanceFactor = 0.1F;
         public int separationDistance = 2;
-        public float separation = 0.03F;
+        public float separation = 0.01F;
         public int flockRange = 20;
         public float alignment = 0.05F;
         public float cohesion = 0.001F;
         public float maxSpeed = 1;
         public float minSpeed = 0.3F;
-        //public int birdFlightTime = 100;
+        public int maxBehaviourTime = 400;
         public float landingResponsiveness = 0.01F;
         public int flightHeightLimit = 20;
         public float flightHeightLimitFactor = 0.005F;

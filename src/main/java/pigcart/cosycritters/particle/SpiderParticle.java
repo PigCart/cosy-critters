@@ -34,13 +34,12 @@ public class SpiderParticle extends ComplexCritterParticle {
         this.blockPos = BlockPos.containing(x, y, z);
         this.direction = Direction.from3DDataValue(direction3DDataValue);
         this.oldPosition = new Vec3(x, y, z);
-        this.hasPhysics = false;
         CosyCritters.spiders++;
     }
 
     @Override
     public void remove() {
-        CosyCritters.spiders--;
+        if (this.isAlive()) CosyCritters.spiders--;
         super.remove();
     }
 

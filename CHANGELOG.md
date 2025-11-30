@@ -3,10 +3,24 @@ This project follows [Pride Versioning](https://pridever.org/) ;3
 
 # v0.2.0
 ###### in progress
-- added bird flocking behaviour
+- added mc-21.11 support
+- added bird flying behaviour
   - very configurable - let me know if you find good settings!
-- changed bird landing and spawning behaviours
-- add mc-21.11 support
+  - flocking with standard boids alignment, cohesion, and separation rules
+  - will steer towards the ground when high up
+  - will steer away from blocks or land on them if approaching from above
+  - will land after a configurable period
+- changed bird landing & perching behaviour
+  - can now perch anywhere instead of pre-defined blocks
+  - will favor locations higher up
+  - will continue flying if over water
+  - will take flight again after a configurable period
+- changed bird spawning behaviour
+  - will now spawn on the ground and begin flying instead of spawning in the air and landing
+  - will spawn randomly within a configured distance
+  - now spawns within a predefined biome tag instead of a predefined block
+- tweaked bird flying animation to allow for periods of gliding
+- fixed critters spawning in non-overworld dimensions
 - refactors and code changes:
   - replaced Yet Another Config Library with the config screen functionality already present in the base game
   - reverted implementation of `ParticleGroup`/`ParticleLimit` due to changes in mc 21.9 making it impossible to create multiple groups with the same limit value, leading to confusing config behaviour

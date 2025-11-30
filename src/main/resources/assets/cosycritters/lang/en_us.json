@@ -22,7 +22,7 @@
   "cosycritters.cohesion": "Flock cohesion",
   "cosycritters.maxSpeed": "Maximum speed",
   "cosycritters.minSpeed": "Minimum speed",
-  "cosycritters.flightTime": "Flight time",
+  "cosycritters.maxBehaviourTime": "Maximum behaviour duration",
   "cosycritters.landingResponsiveness": "Landing responsiveness",
   "cosycritters.flightHeightLimit": "Flight height limit",
   "cosycritters.flightHeightLimitFactor": "Flight height limit factor",

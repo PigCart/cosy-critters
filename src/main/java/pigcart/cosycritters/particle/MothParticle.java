@@ -32,7 +32,7 @@ public class MothParticle extends ComplexCritterParticle {
 
     @Override
     public void remove() {
-        CosyCritters.moths--;
+        if (this.isAlive()) CosyCritters.moths--;
         super.remove();
     }
 
@@ -43,9 +43,9 @@ public class MothParticle extends ComplexCritterParticle {
         // stay within a limit from the lamp
         float centeringFactor = 0.00005f;
         if (targetLamp.distanceTo(new Vec3(x, y, z)) > 1) {
-            this.xd =+ (targetLamp.x - this.x) * centeringFactor;
-            this.yd =+ (targetLamp.y - this.y) * centeringFactor;
-            this.zd =+ (targetLamp.z - this.z) * centeringFactor;
+            this.xd = (targetLamp.x - this.x) * centeringFactor;
+            this.yd = (targetLamp.y - this.y) * centeringFactor;
+            this.zd = (targetLamp.z - this.z) * centeringFactor;
         } else if (targetLamp.distanceTo(new Vec3(x, y, z)) < 0.5) {
             this.xd =- (targetLamp.x - this.x) * centeringFactor;
             this.yd =- (targetLamp.y - this.y) * centeringFactor;
