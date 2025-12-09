@@ -2,7 +2,7 @@
 This project follows [Pride Versioning](https://pridever.org/) ;3
 
 # v0.2.0
-###### in progress
+###### Dec 9, 2025
 - added mc-21.11 support
 - added bird flying behaviour
   - very configurable - let me know if you find good settings!
