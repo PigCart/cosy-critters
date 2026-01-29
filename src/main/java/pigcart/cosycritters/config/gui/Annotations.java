@@ -1,4 +1,4 @@
-package pigcart.cosycritters.config;
+package pigcart.cosycritters.config.gui;
 
 import net.minecraft.network.chat.Component;
 
@@ -21,7 +21,13 @@ public class Annotations {
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.FIELD})
-    public @interface Format {Class<? extends Function<Object, Component>> value();}
+    public @interface Format {
+        Class<? extends Function<Object, Component>> value();
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ElementType.FIELD})
+    public @interface BooleanFormat {String t(); String f();}
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.TYPE})
@@ -33,19 +39,11 @@ public class Annotations {
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.FIELD})
-    public @interface BooleanFormat {String t(); String f();}
-
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target({ElementType.FIELD})
-    public @interface Group {}
+    public @interface NoSubMenu {}
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.FIELD})
     public @interface NoGUI {}
-
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target({ElementType.FIELD})
-    public @interface RegenScreen {}
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.FIELD})
@@ -58,8 +56,4 @@ public class Annotations {
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.FIELD})
     public @interface OnlyVisibleIf {Class<? extends Function<Object, Boolean>> value();}
-
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target({ElementType.FIELD})
-    public @interface OnlyEditableIf {Class<? extends Function<Object, Boolean>> value();}
 }

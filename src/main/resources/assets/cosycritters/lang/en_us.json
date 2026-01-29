@@ -1,5 +1,5 @@
 {
-  "cosycritters.title": "Cosy Critters & Creepy Crawlies Configuration",
+  "cosycritters.title": "Cosy Critters Config",
   "cosycritters.maxBirds": "Amount of birds",
   "cosycritters.maxMoths": "Amount of moths",
   "cosycritters.maxSpiders": "Amount of spiders",
@@ -7,7 +7,7 @@
   "cosycritters.spawnBird": "Spawn birds",
   "cosycritters.spawnMoth": "Spawn moths",
   "cosycritters.spawnSpider": "Spawn spiders",
-  "cosycritters.bird": "Advanced bird options",
+  "cosycritters.bird": "Bird options",
   "cosycritters.reactionDistance": "Reaction distance",
   "cosycritters.reactionDistance.description": "The distance under which birds will fly away from entities getting too close",
   "cosycritters.reactionSpeed": "Reaction speed",

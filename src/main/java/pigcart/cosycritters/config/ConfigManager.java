@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import pigcart.cosycritters.CosyCritters;
+import pigcart.cosycritters.config.gui.ConfigScreen;
 import pigcart.cosycritters.mixin.access.ParticleEngineAccessor;
 
 import java.io.*;
@@ -14,7 +15,10 @@ public class ConfigManager {
     static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     static final String CONFIG_PATH = "config/" + CosyCritters.MOD_ID + ".json";
     public static ConfigData config;
-    public static ConfigData defaultConfig = new ConfigData();
+
+    public static ConfigData getDefaultConfig() {
+        return new ConfigData();
+    }
 
     public static void load() {
         File file = new File(CONFIG_PATH);
@@ -23,14 +27,13 @@ public class ConfigManager {
         } catch (IOException e) {
             CosyCritters.LOGGER.error(e.getMessage());
         }
-        if (config == null || config.configVersion < defaultConfig.configVersion) {
+        if (config == null || config.configVersion < getDefaultConfig().configVersion) {
             config = new ConfigData();
             save();
         }
     }
 
     public static void save() {
-        CosyCritters.LOGGER.info("Saving: " + CONFIG_PATH);
         try (FileWriter writer = new FileWriter(CONFIG_PATH)) {
             GSON.toJson(config, writer);
         } catch (Exception e) {
@@ -39,10 +42,10 @@ public class ConfigManager {
     }
 
     public static Screen screenPlease(Screen lastScreen) {
-        return new ConfigScreen(lastScreen, config, Component.translatable("cosycritters.title"));
+        return new ConfigScreen(lastScreen, config, getDefaultConfig(),Component.translatable("cosycritters.title"));
     }
 
-    public static class resetParticles implements Runnable {
+    public static class ResetParticles implements Runnable {
         @Override
         public void run() {
             ((ParticleEngineAccessor) Minecraft.getInstance().particleEngine).callClearParticles();

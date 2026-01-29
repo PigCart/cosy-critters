@@ -1,20 +1,20 @@
 package pigcart.cosycritters.config;
 
-import pigcart.cosycritters.config.ConfigManager.resetParticles;
+import pigcart.cosycritters.config.ConfigManager.ResetParticles;
 
-import static pigcart.cosycritters.config.Annotations.*;
+import static pigcart.cosycritters.config.gui.Annotations.*;
 
 public class ConfigData {
     @NoGUI public byte configVersion = 1;
 
-    @OnChange(resetParticles.class) public int maxBirds = 50;
-    @OnChange(resetParticles.class) public int maxMoths = 8;
-    @OnChange(resetParticles.class) public int maxSpiders = 16;
+    @OnChange(ResetParticles.class) public int maxBirds = 50;
+    @OnChange(ResetParticles.class) public int maxMoths = 8;
+    @OnChange(ResetParticles.class) public int maxSpiders = 16;
 
     public boolean spawnHatman = true;
-    @OnChange(resetParticles.class) public boolean spawnBird = true;
-    @OnChange(resetParticles.class) public boolean spawnMoth = true;
-    @OnChange(resetParticles.class) public boolean spawnSpider = true;
+    @OnChange(ResetParticles.class) public boolean spawnBird = true;
+    @OnChange(ResetParticles.class) public boolean spawnMoth = true;
+    @OnChange(ResetParticles.class) public boolean spawnSpider = true;
 
     public BirdOptions bird = new BirdOptions();
     public static class BirdOptions {

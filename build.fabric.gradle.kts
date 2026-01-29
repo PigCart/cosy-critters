@@ -34,7 +34,10 @@ repositories {
 }
 
 loom {
-    accessWidenerPath = rootProject.file("src/main/resources/${property("mod.id")}.accesswidener")
+    val accesswidener = rootProject.file("src/main/resources/${property("mod.id")}.accesswidener")
+    if (accesswidener.exists()) {
+        accessWidenerPath = accesswidener
+    }
 }
 
 dependencies {

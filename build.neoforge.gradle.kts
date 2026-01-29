@@ -38,7 +38,7 @@ neoForge {
 
     val accessTransformer = rootProject.file("src/main/resources/META-INF/accesstransformer.cfg")
     if (accessTransformer.exists()) {
-        accessTransformers.from(accessTransformer.absolutePath)
+        accessTransformers.from(accessTransformer)
     }
 
     if (hasProperty("deps.parchment")) parchment {

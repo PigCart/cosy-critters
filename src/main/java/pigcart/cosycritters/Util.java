@@ -22,6 +22,8 @@ import net.minecraft.resources.ResourceLocation;
 
 import pigcart.cosycritters.mixin.access.ParticleEngineAccessor;
 
+import java.net.URI;
+
 // make forge shut up when im trying to keep an eye out for actual errors
 @SuppressWarnings("removal")
 public class Util {
@@ -99,6 +101,14 @@ public class Util {
         /*return Minecraft.getInstance().gameRenderer.getLevelRenderState().skyRenderState.moonPhase.equals(MoonPhase.NEW_MOON);
         *///?} else {
         return level.dimensionType().moonPhase(level.dayTime()) == 4;
+        //?}
+    }
+
+    public static void openUri(URI uri) {
+        //? >=1.21.11 {
+        /*net.minecraft.util.Util.getPlatform().openUri(uri);
+        *///?} else {
+        net.minecraft.Util.getPlatform().openUri(uri);
         //?}
     }
 }

@@ -1,4 +1,4 @@
-package pigcart.cosycritters.config.widget;
+package pigcart.cosycritters.config.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -13,8 +13,8 @@ import net.minecraft.network.chat.Component;
 public class LabelWidget extends AbstractStringWidget {
     private float alignX;
 
-    public LabelWidget(int height, Component message) {
-        super(0, 0, 0, height, message, Minecraft.getInstance().font);
+    public LabelWidget(int width, int height, Component message) {
+        super(0, 0, width, height, message, Minecraft.getInstance().font);
         this.alignX = 0.5F;
         this.active = false;
     }
