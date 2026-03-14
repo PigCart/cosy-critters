@@ -1,6 +1,10 @@
 # Changelog
 This project follows [Pride Versioning](https://pridever.org/) ;3
 
+# v0.2.1
+###### in progress
+- added mc26.1 support
+
 # v0.2.0
 ###### Dec 9, 2025
 - added mc-21.11 support

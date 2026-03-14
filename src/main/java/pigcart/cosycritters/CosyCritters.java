@@ -140,8 +140,8 @@ public class CosyCritters {
                 && BirdParticle.birds.size() < config.maxBirds
         ) {
             Vec3 player = Minecraft.getInstance().player.position();
-            int x = level.random.nextIntBetweenInclusive((int) (player.x - config.bird.despawnDistance), (int) (player.x + config.bird.despawnDistance));
-            int z = level.random.nextIntBetweenInclusive((int) (player.z - config.bird.despawnDistance), (int) (player.z + config.bird.despawnDistance));
+            int x = level.getRandom().nextIntBetweenInclusive((int) (player.x - config.bird.despawnDistance), (int) (player.x + config.bird.despawnDistance));
+            int z = level.getRandom().nextIntBetweenInclusive((int) (player.z - config.bird.despawnDistance), (int) (player.z + config.bird.despawnDistance));
             int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z);
             if (    Vector3d.distance(x, y, z, player.x, player.y, player.z) > config.bird.reactionDistance
                     && level.getBiome(BlockPos.containing(x, y, z)).is(BiomeTags.IS_FOREST)
@@ -167,7 +167,7 @@ public class CosyCritters {
                 && !Minecraft.getInstance().player.position().closerThan(blockPos.getCenter(), 2)
         ) {
             if (Minecraft.getInstance().player.position().closerThan(blockPos.getCenter(), 2)) return;
-            Direction direction = Direction.getRandom(level.random);
+            Direction direction = Direction.getRandom(level.getRandom());
             blockPos = blockPos.relative(direction);
             BlockState state = level.getBlockState(blockPos);
             if (state.isFaceSturdy(level, blockPos, direction.getOpposite())) {

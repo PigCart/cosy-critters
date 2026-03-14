@@ -4,7 +4,9 @@ package pigcart.cosycritters.loaders.fabric;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+//~ if >=26.1 'ParticleFactoryRegistry' -> 'ParticleProviderRegistry' {
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
+//~}
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -24,10 +26,12 @@ public class FabricEntrypoint implements ClientModInitializer {
 
         CosyCritters.onInitializeClient();
 
+        //~ if >=26.1 'ParticleFactoryRegistry' -> 'ParticleProviderRegistry' {
         ParticleFactoryRegistry.getInstance().register(CosyCritters.BIRD   ,   BirdParticle.Provider::new);
         ParticleFactoryRegistry.getInstance().register(CosyCritters.HAT_MAN, HatManParticle.Provider::new);
         ParticleFactoryRegistry.getInstance().register(CosyCritters.MOTH   ,   MothParticle.Provider::new);
         ParticleFactoryRegistry.getInstance().register(CosyCritters.SPIDER , SpiderParticle.Provider::new);
+        //~}
 
 
         ClientTickEvents.END_CLIENT_TICK.register(CosyCritters::onTick);

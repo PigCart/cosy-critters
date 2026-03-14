@@ -68,16 +68,14 @@ public class Util {
     }
 
     public static boolean isDay(Level level) {
-        //? if >=1.21.11 {
+        //? >=26.1 {
+        /*return level.isBrightOutside();
+        *///?} >=1.21.11 {
         /*return level.getDayTime() % 24000 < 13000;
         *///?} else {
         // level.isDay always returns true in 1.21.0
         return level.dayTime() % 24000 < 13000;
         //?}
-    }
-
-    public static void addChatMsg(String message) {
-        Minecraft.getInstance().gui.getChat().addMessage(Component.literal(message));
     }
 
     public static boolean isExposed(Level level, int x, int y, int z) {
@@ -97,7 +95,9 @@ public class Util {
     }
 
     public static boolean isNewMoon(ClientLevel level) {
-        //? if >=1.21.11 {
+        //? >=26.1 {
+        /*return Minecraft.getInstance().gameRenderer.getGameRenderState().levelRenderState.skyRenderState.moonPhase.equals(MoonPhase.NEW_MOON);
+        *///?} >=1.21.11 {
         /*return Minecraft.getInstance().gameRenderer.getLevelRenderState().skyRenderState.moonPhase.equals(MoonPhase.NEW_MOON);
         *///?} else {
         return level.dimensionType().moonPhase(level.dayTime()) == 4;
@@ -109,6 +109,14 @@ public class Util {
         /*net.minecraft.util.Util.getPlatform().openUri(uri);
         *///?} else {
         net.minecraft.Util.getPlatform().openUri(uri);
+        //?}
+    }
+
+    static void addChatMsg(String message) {
+        //? >=26.1 {
+        /*Minecraft.getInstance().gui.getChat().addClientSystemMessage(Component.literal(message));
+         *///?} else {
+        Minecraft.getInstance().gui.getChat().addMessage(Component.literal(message));
         //?}
     }
 }

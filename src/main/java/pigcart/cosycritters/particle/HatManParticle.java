@@ -8,7 +8,7 @@ import net.minecraft.core.particles.SimpleParticleType;
 public class HatManParticle extends CritterParticle {
 
     private HatManParticle(ClientLevel level, double x, double y, double z, SpriteSet spriteSet) {
-        super(level, x, y, z, spriteSet.get(level.random));
+        super(level, x, y, z, spriteSet.get(level.getRandom()));
         this.sprite = spriteSet.get(this.random);
         this.quadSize = 1F;
         this.lifetime = 6000;

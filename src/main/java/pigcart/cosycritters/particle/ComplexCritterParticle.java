@@ -1,7 +1,7 @@
 package pigcart.cosycritters.particle;
 
 //? if >=1.21.9 {
-/*import net.minecraft.client.renderer.state.QuadParticleRenderState;
+/*import net.minecraft.client.renderer.state./^?>=26.1{^//^level.^//^?}^/QuadParticleRenderState;
 *///?} else {
 import com.mojang.blaze3d.vertex.VertexConsumer;
 //?}
