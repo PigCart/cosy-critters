@@ -16,10 +16,11 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 import pigcart.cosycritters.CosyCritters;
-import pigcart.cosycritters.config.ConfigManager;
+import pigcart.cosycritters.config.gui.ConfigScreen;
 import pigcart.cosycritters.particle.*;
 
 @Mod(CosyCritters.MOD_ID)
@@ -58,6 +59,7 @@ public class ForgeEntrypoint {
 
     @SuppressWarnings("removal")
     public ForgeEntrypoint() {
+        if (FMLEnvironment.dist.isDedicatedServer()) return;
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         MinecraftForge.EVENT_BUS.addListener(ForgeEntrypoint::onTick);
         MinecraftForge.EVENT_BUS.addListener(ForgeEntrypoint::onRegisterCommands);
@@ -67,7 +69,7 @@ public class ForgeEntrypoint {
         ModLoadingContext.get().registerExtensionPoint(
                 ConfigScreenHandler.ConfigScreenFactory.class,
                 () -> new ConfigScreenHandler.ConfigScreenFactory(
-                        (client, lastScreen) -> ConfigManager.screenPlease(lastScreen)
+                        (client, lastScreen) -> ConfigScreen.screenPlease(lastScreen)
                 )
         );
     }

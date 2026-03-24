@@ -1,9 +1,14 @@
 # Changelog
 This project follows [Pride Versioning](https://pridever.org/) ;3
 
-# v0.2.1
-###### in progress
+# v0.3.0
+###### Mar 24
 - added mc26.1 support
+- added biome whitelist for birds and included more biomes by default
+- reduced bird spawn rate during rain
+- fixed crash when loading mod on forge servers
+- fixed critters not appearing in multiplayer on forge due to an issue within forge itself
+- removed hat man
 
 # v0.2.0
 ###### Dec 9, 2025

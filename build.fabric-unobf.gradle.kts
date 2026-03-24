@@ -48,7 +48,7 @@ dependencies {
 
     implementation("net.fabricmc:fabric-loader:${property("deps.fabric-loader")}")
     implementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric-api")}")
-    compileOnly("com.terraformersmc:modmenu:${property("deps.modmenu")}")
+    implementation("com.terraformersmc:modmenu:${property("deps.modmenu")}")
 }
 
 tasks {

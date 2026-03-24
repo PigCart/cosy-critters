@@ -1,6 +1,7 @@
 package pigcart.cosycritters.config;
 
-import pigcart.cosycritters.config.ConfigManager.ResetParticles;
+import pigcart.cosycritters.config.Whitelist.BiomeList;
+import pigcart.cosycritters.config.gui.ConfigResponders.ResetParticles;
 
 import static pigcart.cosycritters.config.gui.Annotations.*;
 
@@ -18,6 +19,7 @@ public class ConfigData {
 
     public BirdOptions bird = new BirdOptions();
     public static class BirdOptions {
+        public BiomeList biomes = new BiomeList(true, "#c:is_forest", "#c:is_taiga", "#c:is_jungle", "#minecraft:is_forest", "#minecraft:is_taiga", "#minecraft:is_jungle");
         public int reactionDistance = 10;
         public int reactionSpeed = 20;
         public int despawnDistance = 128;

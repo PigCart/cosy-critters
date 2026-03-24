@@ -1,9 +1,13 @@
 package pigcart.cosycritters;
 
+import net.minecraft.ResourceLocationException;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ClipContext;
@@ -11,14 +15,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
-//? if >= 1.21.11 {
-/*import net.minecraft.world.level.MoonPhase;
-import net.minecraft.resources.Identifier;
-*///?} else
 import net.minecraft.resources.ResourceLocation;
-//? if >= 1.21.9 {
-/*import net.minecraft.data.AtlasIds;
-*///?}
 
 import pigcart.cosycritters.mixin.access.ParticleEngineAccessor;
 
@@ -29,13 +26,42 @@ import java.net.URI;
 public class Util {
 
 
-    public static /*? >=1.21.11 {*//*Identifier*//*?} else {*/ResourceLocation/*?}*/ getId(String path) {
+    public static /*? >=1.21.11 {*//*ResourceLocation*//*?} else {*/ResourceLocation/*?}*/ getId(String path) {
         //? if <=1.20.1 {
         return new ResourceLocation(CosyCritters.MOD_ID, path);
          //?} else {
-        /*return /^? >=1.21.11 {^//^Identifier^//^?} else {^/ResourceLocation/^?}^/.fromNamespaceAndPath(CosyCritters.MOD_ID, path);
+        /*return /^? >=1.21.11 {^//^ResourceLocation^//^?} else {^/ResourceLocation/^?}^/.fromNamespaceAndPath(CosyCritters.MOD_ID, path);
         *///?}
     }
+
+    public static ResourceLocation parseId(String string) {
+        try {
+            //? if <=1.20.1 {
+            return ResourceLocation.tryParse(string);
+             //?} else {
+            /*return ResourceLocation.parse(string);
+            *///?}
+        } catch (ResourceLocationException e) {
+            return null;
+        }
+    }
+
+    public static <T extends ParticleOptions> void spawnParticle(T particleType, String providerId, ClientLevel level, double x, double y, double z) {
+        //? forge {
+        /*Minecraft.getInstance().particleEngine.add(makeParticle(particleType, providerId, level, x, y, z));
+        *///?} else {
+        level.addParticle(particleType, x, y, z, 0, 0, 0);
+        //?}
+    }
+
+    //? forge {
+    /*/// reimplementation of ParticleEngine.makeParticle to bypass a multiplayer bug in forge's registry in 1.20.1
+    public static <T extends ParticleOptions> Particle makeParticle(T particleType, String providerId, ClientLevel level, double x, double y, double z) {
+        final ParticleEngineAccessor particleEngine = (ParticleEngineAccessor) Minecraft.getInstance().particleEngine;
+        final ParticleProvider<T> provider = (ParticleProvider) particleEngine.getProviders().get(getId(providerId));
+        return provider.createParticle(particleType, level, x, y, z, 0, 0, 0);
+    }
+    *///?}
 
     public static ClipContext getClipContext(Vec3 clipStart, Vec3 clipEnd) {
         return new ClipContext(clipStart, clipEnd, ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, getCollisionContext());
@@ -53,7 +79,7 @@ public class Util {
 
     public static TextureAtlasSprite getSprite(String path) {
         //? if >= 1.21.9 {
-        /*return Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.PARTICLES).getSprite(getId(path));
+        /*return Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(net.minecraft.data.AtlasIds.PARTICLES).getSprite(getId(path));
         *///?} else {
         return ((ParticleEngineAccessor) Minecraft.getInstance().particleEngine).getTextureAtlas().getSprite(getId(path));
          //?}
@@ -96,9 +122,9 @@ public class Util {
 
     public static boolean isNewMoon(ClientLevel level) {
         //? >=26.1 {
-        /*return Minecraft.getInstance().gameRenderer.getGameRenderState().levelRenderState.skyRenderState.moonPhase.equals(MoonPhase.NEW_MOON);
+        /*return Minecraft.getInstance().gameRenderer.getGameRenderState().levelRenderState.skyRenderState.moonPhase.equals(net.minecraft.world.level.MoonPhase.NEW_MOON);
         *///?} >=1.21.11 {
-        /*return Minecraft.getInstance().gameRenderer.getLevelRenderState().skyRenderState.moonPhase.equals(MoonPhase.NEW_MOON);
+        /*return Minecraft.getInstance().gameRenderer.getLevelRenderState().skyRenderState.moonPhase.equals(net.minecraft.world.level.MoonPhase.NEW_MOON);
         *///?} else {
         return level.dimensionType().moonPhase(level.dayTime()) == 4;
         //?}
@@ -112,7 +138,7 @@ public class Util {
         //?}
     }
 
-    static void addChatMsg(String message) {
+    public static void addChatMsg(String message) {
         //? >=26.1 {
         /*Minecraft.getInstance().gui.getChat().addClientSystemMessage(Component.literal(message));
          *///?} else {

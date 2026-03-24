@@ -20,7 +20,7 @@ public class InputWidget extends EditBox {
     /// matches characters that aren't digits or points
     public static final Pattern NON_FLOAT = Pattern.compile("[^0-9.]");
     /// matches characters that aren't valid in an identifier
-    public static final Pattern NON_PATH = Pattern.compile("[^a-z0-9:/._-]");
+    public static final Pattern NON_PATH = Pattern.compile("[^a-z0-9#:/._-]");
     /// matches characters that aren't valid in a hex string
     public static final Pattern NON_HEX = Pattern.compile("[^a-fA-F0-9#]");
 

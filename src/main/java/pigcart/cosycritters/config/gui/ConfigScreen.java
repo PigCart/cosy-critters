@@ -39,6 +39,10 @@ public class ConfigScreen extends Screen {
         this.configGenericType = null;
     }
 
+    public static Screen screenPlease(Screen lastScreen) {
+        return new ConfigScreen(lastScreen, ConfigManager.config, ConfigManager.getDefaultConfig(),Component.translatable("cosycritters.title"));
+    }
+
     @Override
     protected void init() {
         addTitle();

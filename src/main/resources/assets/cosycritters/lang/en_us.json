@@ -1,5 +1,6 @@
 {
   "cosycritters.title": "Cosy Critters Config",
+
   "cosycritters.maxBirds": "Amount of birds",
   "cosycritters.maxMoths": "Amount of moths",
   "cosycritters.maxSpiders": "Amount of spiders",
@@ -8,6 +9,7 @@
   "cosycritters.spawnMoth": "Spawn moths",
   "cosycritters.spawnSpider": "Spawn spiders",
   "cosycritters.bird": "Bird options",
+
   "cosycritters.reactionDistance": "Reaction distance",
   "cosycritters.reactionDistance.description": "The distance under which birds will fly away from entities getting too close",
   "cosycritters.reactionSpeed": "Reaction speed",
@@ -26,6 +28,17 @@
   "cosycritters.landingResponsiveness": "Landing responsiveness",
   "cosycritters.flightHeightLimit": "Flight height limit",
   "cosycritters.flightHeightLimitFactor": "Flight height limit factor",
-  "cosycritters.flightRandomness": "Flight randomness"
+  "cosycritters.flightRandomness": "Flight randomness",
 
+  "cosycritters.biomes": "Biomes",
+  "cosycritters.addNew": "Add new",
+  "cosycritters.biomeList": "Biomes list",
+  "cosycritters.blockList": "Blocks list",
+  "cosycritters.wikiLink": "View common tags online",
+  "cosycritters.isWhitelist": "List mode",
+  "cosycritters.whitelist": "Whitelist",
+  "cosycritters.blacklist": "Blacklist",
+  "cosycritters.entries": "List entries",
+  "cosycritters.BlockList.entries": "Blocks",
+  "cosycritters.suggest": "Enter a world to see suggestions"
 }

@@ -2,12 +2,7 @@ package pigcart.cosycritters.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
 import pigcart.cosycritters.CosyCritters;
-import pigcart.cosycritters.config.gui.ConfigScreen;
-import pigcart.cosycritters.mixin.access.ParticleEngineAccessor;
 
 import java.io.*;
 
@@ -22,15 +17,25 @@ public class ConfigManager {
 
     public static void load() {
         File file = new File(CONFIG_PATH);
-        try (FileReader reader = new FileReader(file)) {
-            config = GSON.fromJson(reader, ConfigData.class);
-        } catch (IOException e) {
-            CosyCritters.LOGGER.error(e.getMessage());
+        if (file.exists()) {
+            try (FileReader reader = new FileReader(file)) {
+                config = GSON.fromJson(reader, ConfigData.class);
+            } catch (Exception e) {
+                CosyCritters.LOGGER.error("Error loading config", e);
+                config = getDefaultConfig();
+                save();
+            }
+        } else {
+            CosyCritters.LOGGER.info("Creating config file at " + CONFIG_PATH);
+            config = getDefaultConfig();
+            save();
         }
         if (config == null || config.configVersion < getDefaultConfig().configVersion) {
+            CosyCritters.LOGGER.info("Overwriting old config file");
             config = new ConfigData();
             save();
         }
+        config.bird.biomes.populateInternalLists();
     }
 
     public static void save() {
@@ -39,16 +44,6 @@ public class ConfigManager {
         } catch (Exception e) {
             CosyCritters.LOGGER.error(e.getMessage());
         }
-    }
-
-    public static Screen screenPlease(Screen lastScreen) {
-        return new ConfigScreen(lastScreen, config, getDefaultConfig(),Component.translatable("cosycritters.title"));
-    }
-
-    public static class ResetParticles implements Runnable {
-        @Override
-        public void run() {
-            ((ParticleEngineAccessor) Minecraft.getInstance().particleEngine).callClearParticles();
-        }
+        config.bird.biomes.populateInternalLists();
     }
 }

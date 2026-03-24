@@ -10,6 +10,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
@@ -18,7 +19,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import pigcart.cosycritters.CosyCritters;
-import pigcart.cosycritters.config.ConfigManager;
+import pigcart.cosycritters.config.gui.ConfigScreen;
 import pigcart.cosycritters.particle.*;
 
 @Mod(CosyCritters.MOD_ID)
@@ -56,6 +57,7 @@ public class NeoforgeEntrypoint {
     }
 
     public NeoforgeEntrypoint(IEventBus eventBus) {
+        if (FMLEnvironment.dist.isDedicatedServer()) return;
         NeoForge.EVENT_BUS.addListener(NeoforgeEntrypoint::onTick);
         NeoForge.EVENT_BUS.addListener(NeoforgeEntrypoint::onRegisterCommands);
         PARTICLE_TYPES.register(eventBus);
@@ -63,7 +65,7 @@ public class NeoforgeEntrypoint {
         CosyCritters.onInitializeClient();
         ModLoadingContext.get().registerExtensionPoint(
                 IConfigScreenFactory.class,
-                () -> (modContainer, lastScreen) -> ConfigManager.screenPlease(lastScreen)
+                () -> (modContainer, lastScreen) -> ConfigScreen.screenPlease(lastScreen)
         );
     }
 }

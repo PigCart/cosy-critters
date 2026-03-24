@@ -1,10 +1,8 @@
 package pigcart.cosycritters;
 
-//? if >=1.21.9 {
-/*import net.minecraft.client.gui.components.debug.DebugScreenEntries;
-*///?}
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -21,6 +19,7 @@ import org.joml.Vector3d;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pigcart.cosycritters.config.ConfigManager;
+import pigcart.cosycritters.config.gui.ConfigScreen;
 import pigcart.cosycritters.particle.BirdParticle;
 
 import java.util.List;
@@ -68,7 +67,7 @@ public class CosyCritters {
         ConfigManager.load();
 
         //? if >= 1.21.9 {
-        /*DebugScreenEntries.register(
+        /*net.minecraft.client.gui.components.debug.DebugScreenEntries.register(
                 Util.getId("a_stats"),
                 (display, level, levelChunk, levelChunk2) ->
                         display.addToGroup(Util.getId("particle_tracking"), getDebugStrings())
@@ -82,7 +81,7 @@ public class CosyCritters {
                 .executes(ctx -> {
                     // schedule set screen so chat screen can close first
                     Util.schedule(() ->
-                            Minecraft.getInstance().setScreen(screenPlease(null)));
+                            Minecraft.getInstance().setScreen(ConfigScreen.screenPlease(null)));
                     return 0;
                 })
                 .then(LiteralArgumentBuilder.literal("debug")
@@ -116,8 +115,8 @@ public class CosyCritters {
             }
         }
     }
-    private static void trySpawnHatman(Minecraft minecraft) {
-        if (!config.spawnHatman) return;
+    public static void trySpawnHatman(Minecraft minecraft) {
+        if (!config.spawnHatman && minecraft.level.getRandom().nextFloat() < 0.1) return;
         final Optional<BlockPos> sleepingPos = minecraft.player.getSleepingPos();
         if (sleepingPos.isPresent()) {
             BlockState state = minecraft.level.getBlockState(sleepingPos.get());
@@ -134,23 +133,25 @@ public class CosyCritters {
             }
         }
     }
-    public static void trySpawnBird(Level level) {
+    public static void trySpawnBird(ClientLevel level) {
+
         if (    config.spawnBird
                 && Util.isDay(level)
                 && BirdParticle.birds.size() < config.maxBirds
         ) {
+            if (level.isRaining() && level.getRandom().nextFloat() > 0.01) return;
             Vec3 player = Minecraft.getInstance().player.position();
             int x = level.getRandom().nextIntBetweenInclusive((int) (player.x - config.bird.despawnDistance), (int) (player.x + config.bird.despawnDistance));
             int z = level.getRandom().nextIntBetweenInclusive((int) (player.z - config.bird.despawnDistance), (int) (player.z + config.bird.despawnDistance));
             int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z);
             if (    Vector3d.distance(x, y, z, player.x, player.y, player.z) > config.bird.reactionDistance
-                    && level.getBiome(BlockPos.containing(x, y, z)).is(BiomeTags.IS_FOREST)
+                    && config.bird.biomes.contains(level.getBiome(BlockPos.containing(x, y, z)))
             ) {
-                level.addParticle(BIRD, x, y, z, 0, 0.5, 0);
+                Minecraft.getInstance().particleEngine.add(new BirdParticle(level, x + 0.5F, y + 0.5F, z + 0.5F));
             }
         }
     }
-    public static void trySpawnMoth(Level level, BlockPos blockPos) {
+    public static void trySpawnMoth(ClientLevel level, BlockPos blockPos) {
         if (    config.spawnMoth
                 && moths < config.maxMoths
                 && level.getBiome(blockPos).is(BiomeTags.IS_OVERWORLD)
@@ -158,9 +159,10 @@ public class CosyCritters {
                 && level.getBrightness(LightLayer.BLOCK, blockPos) > 13
                 && isExposed(level, blockPos.getX(), blockPos.getY(), blockPos.getZ())
         ) {
-            level.addParticle(MOTH, blockPos.getX(), blockPos.getY(), blockPos.getZ(), 0, 0, 0);
+            Util.spawnParticle(MOTH, "moth", level, blockPos.getX(), blockPos.getY(), blockPos.getZ());
         }
     }
+
     public static void trySpawnSpider(Level level, BlockPos blockPos) {
         if (    config.spawnSpider
                 && spiders < config.maxSpiders
@@ -172,7 +174,7 @@ public class CosyCritters {
             BlockState state = level.getBlockState(blockPos);
             if (state.isFaceSturdy(level, blockPos, direction.getOpposite())) {
                 final Vec3 spawnPos = blockPos.getCenter().add(new Vec3(direction.step()).multiply(-0.6f, -0.6f, -0.6f));
-                level.addParticle(SPIDER, spawnPos.x, spawnPos.y, spawnPos.z, direction.get3DDataValue(), 0, 0);
+                Util.spawnParticle(SPIDER, "spider", (ClientLevel) level, spawnPos.x, spawnPos.y, spawnPos.z);
             }
         }
     }

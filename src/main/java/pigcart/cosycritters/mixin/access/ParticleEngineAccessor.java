@@ -1,9 +1,6 @@
 package pigcart.cosycritters.mixin.access;
 
 import net.minecraft.client.particle.ParticleEngine;
-//? if < 1.21.9 {
-import net.minecraft.client.renderer.texture.TextureAtlas;
-//?}
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;
@@ -11,10 +8,15 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 @Mixin(ParticleEngine.class)
 public interface ParticleEngineAccessor {
 
-    //? if < 1.21.9 {
+    //? < 1.21.9 {
     @Accessor
-    TextureAtlas getTextureAtlas();
+    net.minecraft.client.renderer.texture.TextureAtlas getTextureAtlas();
     //?}
+
+    //? forge {
+    /*@Accessor
+    java.util.Map<net.minecraft.resources.ResourceLocation, net.minecraft.client.particle.ParticleProvider<?>> getProviders();
+    *///?}
 
     @Invoker
     void callClearParticles();

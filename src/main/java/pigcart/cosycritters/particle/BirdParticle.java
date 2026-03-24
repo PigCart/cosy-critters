@@ -1,6 +1,5 @@
 package pigcart.cosycritters.particle;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.BlockPos;
@@ -17,7 +16,6 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Vector2f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
-import pigcart.cosycritters.CosyCritters;
 import pigcart.cosycritters.Util;
 import pigcart.cosycritters.config.ConfigData;
 import pigcart.cosycritters.config.ConfigManager;
@@ -42,9 +40,8 @@ public class BirdParticle extends CritterParticle {
         CHECKING
     }
 
-    private BirdParticle(ClientLevel level, double x, double y, double z, double landAtX, double landAtY, double landAtZ) {
+    public BirdParticle(ClientLevel level, double x, double y, double z) {
         super(level, x, y, z, Util.getSprite("crow_left"));
-        if (entitiesNearby(new Vec3(landAtX, landAtY, landAtZ))) this.remove();
         this.quadSize = 0.5F;
         this.setSize(0.5F, 0.5F);
         this.lifetime = 6000;
@@ -271,7 +268,7 @@ public class BirdParticle extends CritterParticle {
     public static class Provider extends CritterProvider {
         public Provider(SpriteSet spriteSet) {super(spriteSet);}
         public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double velocityX, double velocityY, double velocityZ) {
-            return new BirdParticle(level, x, y, z, velocityX, velocityY, velocityZ);
+            return new BirdParticle(level, x, y, z);
         }
     }
 }

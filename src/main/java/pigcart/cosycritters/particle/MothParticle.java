@@ -21,7 +21,7 @@ public class MothParticle extends ComplexCritterParticle {
 
     private final Vec3 targetLamp;
 
-    private MothParticle(ClientLevel level, double x, double y, double z, SpriteSet spriteSet) {
+    public MothParticle(ClientLevel level, double x, double y, double z, SpriteSet spriteSet) {
         super(level, x, y, z, spriteSet.get(level.getRandom()));
         this.quadSize = 0.1f;
         this.lifetime = 500;
