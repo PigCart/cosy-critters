@@ -1,8 +1,12 @@
 # Changelog
 This project follows [Pride Versioning](https://pridever.org/) ;3
 
+# v0.3.1
+###### Mar 25, 2026
+- fixed config crashing on fabric due to missing metadata
+
 # v0.3.0
-###### Mar 24
+###### Mar 24, 2026
 - added mc26.1 support
 - added biome whitelist for birds and included more biomes by default
 - reduced bird spawn rate during rain

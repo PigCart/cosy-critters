@@ -17,6 +17,8 @@ tasks.named<ProcessResources>("processResources") {
         this["mod_license"] =   prop("mod.license"      )
         this["mod_icon"] =      prop("mod.icon"         )
         this["version_range"] = prop("version_range"    )
+
+        this["access_widener"]= prop("mod.id")
     }
 
     filesMatching("fabric.mod.json") {

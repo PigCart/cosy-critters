@@ -29,6 +29,7 @@
       "environment": "client"
     }
   ],
+  "accessWidener" : "${access_widener}.accesswidener",
   "depends": {
     "fabricloader": ">=0.12.8",
     "fabric-api": "*",
