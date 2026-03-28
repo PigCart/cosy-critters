@@ -219,6 +219,9 @@ public class Widgets {
                 screen.add(widgets);
             } else {
                 AbstractWidget[] widgets = getOptionWidget(screen, field, name, currentValue, defaultValue, onValueChange, valueFormatter, type);
+                for (AbstractWidget widget : widgets) {
+                    widget.setTooltip(Tooltip.create(Component.translatableWithFallback(name + ".description", "")));
+                }
                 screen.add(widgets);
             }
         }

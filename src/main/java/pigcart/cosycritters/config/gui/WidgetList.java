@@ -1,8 +1,3 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
-
 package pigcart.cosycritters.config.gui;
 
 import com.google.common.collect.ImmutableList;
@@ -14,11 +9,9 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
-//? >=26.1 {
-/*import net.minecraft.client.gui.GuiGraphicsExtractor;
-*///?} else {
+//~ if >=26.1 'GuiGraphics' -> 'GuiGraphicsExtractor' {
 import net.minecraft.client.gui.GuiGraphics;
-//?}
+//~}
 
 public class WidgetList extends ContainerObjectSelectionList<WidgetList.Entry> {
 

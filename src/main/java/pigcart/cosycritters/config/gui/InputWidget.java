@@ -1,6 +1,10 @@
 package pigcart.cosycritters.config.gui;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+//~ if >=26.1 'GuiGraphics' -> 'GuiGraphicsExtractor' {
+import net.minecraft.client.gui.GuiGraphics;
+//~}
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 
@@ -11,8 +15,9 @@ import java.util.regex.Pattern;
 
 public class InputWidget extends EditBox {
 
-    String unformattedValue;
     Function<Object, Component> valueFormatter;
+    String formattedValue;
+    int formattedColor;
 
     Pattern filteredChars;
     /// matches characters that aren't digits
@@ -27,55 +32,62 @@ public class InputWidget extends EditBox {
     public InputWidget(int width, int x, String initialValue, Consumer<String> onValueChange, Function<Object, Component> valueFormatter) {
         super(Minecraft.getInstance().font, 0, 0, width, Widgets.BUTTON_HEIGHT, Component.empty());
         ((AbstractWidgetAccess)this).particle_rain$setOffset(x);
-        unformattedValue = initialValue;
         this.valueFormatter = valueFormatter;
+        this.setValue(initialValue);
         this.setResponder((value) -> {
-            if (!this.isFocused()) return; // when unfocused the value is formatted and should be ignored
-            unformattedValue = value;
             try {
                 onValueChange.accept(value);
                 this.setTextColor(EditBox.DEFAULT_TEXT_COLOR);
+                formatValue();
             } catch (NumberFormatException ignored) {
                 // keep old value if input invalid
-                this.setTextColor(0xFFFF5555); // equivalent of ChatFormatting.RED. modern mc needs alpha specified
+                this.setTextColor(0xFFFF5555); // ARGB equivalent of ChatFormatting.RED. modern mc needs alpha specified
             }
         });
-        format();
     }
 
-    /*@Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (!this.isHovered) setFocused(false);
-        return super.mouseClicked(mouseX, mouseY, button);
-
-    }*/
+    @Override
+    public void setValue(String text) {
+        super.setValue(text);
+        formatValue();
+    }
 
     @Override
     public void setFocused(boolean focused) {
         super.setFocused(focused);
-        format();
+        formatValue();
     }
 
-    public void format() {
+    public void formatValue() {
         if (this.isFocused()) {
-            forceSetValue(unformattedValue);
+            formattedColor = 0xFF555555;
+            this.setTextColor(EditBox.DEFAULT_TEXT_COLOR);
         } else {
-            forceSetValue(valueFormatter.apply(unformattedValue).getString());
+            formattedColor = EditBox.DEFAULT_TEXT_COLOR;
+            this.setTextColor(0x00000000);
         }
+        formattedValue = valueFormatter.apply(this.getValue()).getString();
     }
 
-    /// Sets the displayed value without validation
-    public void forceSetValue(String value) {
-        // AW'd because @Accesor requires method name 'setValue' that conflicts with the base game
-        this.value = value;
-        //? >=1.21.1 {
-        /*moveCursorToEnd(false);
-        *///?} else {
-        moveCursorToEnd();
-        //?}
-        setHighlightPos(getCursorPosition());
+    @Override
+    //? >=26.1 {
+    /*public void extractWidgetRenderState(net.minecraft.client.gui.GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float a) {
+        super.extractWidgetRenderState(guiGraphics, mouseX, mouseY, a);
+    *///?} else {
+    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
+    //?}
+        if (formattedValue.isEmpty()) return;
+        final Font font = Minecraft.getInstance().font;
+        final int x = this.getX() + 4;
+        final int y = this.getY() + (this.height - 8) / 2;
+        //~ if >=26.1 'drawString' -> 'text' {
+        guiGraphics.drawString(font, formattedValue, x, y, formattedColor);
+        if (isFocused()) {
+            guiGraphics.drawString(font, this.getValue(), x, y, EditBox.DEFAULT_TEXT_COLOR);
+        }
+        //~}
     }
-
 
     /// Sets the filter used by [EditBox]
     /// @param pattern Regex describing characters to be omitted from input

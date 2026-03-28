@@ -1,6 +1,12 @@
 # Changelog
 This project follows [Pride Versioning](https://pridever.org/) ;3
 
+# v0.3.2
+###### in progress
+- fixed unreadable config inputs when CaramelChat is installed
+- added display units to config entries
+- added tooltips to config entries
+
 # v0.3.1
 ###### Mar 25, 2026
 - fixed config crashing on fabric due to missing metadata

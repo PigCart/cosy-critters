@@ -11,6 +11,7 @@ import pigcart.cosycritters.mixin.access.ParticleEngineAccessor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -58,6 +59,24 @@ public class ConfigResponders {
         @Override
         public void run() {
             ((ParticleEngineAccessor) Minecraft.getInstance().particleEngine).callClearParticles();
+        }
+    }
+
+    public static class DistanceInBlocks implements Function<Object, Component> {
+        public Component apply(Object stringValue) {
+            return Component.literal(stringValue + " ").append(Component.translatable("cosycritters.distanceInblocks"));
+        }
+    }
+
+    public static class TimeInTicks implements Function<Object, Component> {
+        public Component apply(Object stringValue) {
+            try {
+                int i = Integer.parseInt((String) stringValue);
+                return Component.literal(stringValue + " ")
+                        .append(Component.translatable("cosycritters.timeInTicks", i / 20F));
+            } catch (NumberFormatException e) {
+                return Component.literal((String) stringValue);
+            }
         }
     }
 }
