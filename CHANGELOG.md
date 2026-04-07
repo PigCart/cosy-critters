@@ -1,14 +1,21 @@
-# Changelog
-This project follows [Pride Versioning](https://pridever.org/) ;3
+### version scheme
+`overhaul.feature.hotfix`
+- **overhaul** number is increased when significant parts of code are replaced or introduced
+- **feature** number is increased when a new feature is added, and resets after an overhaul
+- **hotfix** number is increased when something minor is tweaked or a bug is fixed, and resets after a new feature
+
+this mimics the version scheme used by minecraft between 2011 and 2024.
 
 # v0.3.2
-###### in progress
+###### Apr 7, 2026
 - fixed unreadable config inputs when CaramelChat is installed
 - fixed localization breaking decimal number inputs
 - fixed number inputs not accepting negative values
 - fixed hat man toggle not functioning (sorry!!!)
-- readded descriptions to config entries
+- added descriptions to config entries
 - added display units to config entries
+- added whitelist for blocks birds can spawn on
+  - tweaked default list values to be more similar to the old leaf-required spawning
 - added `zh_cn` and `zh_tw` chinese translations (ty sasaki-akari)
 
 # v0.3.1

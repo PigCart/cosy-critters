@@ -134,7 +134,6 @@ public class CosyCritters {
         }
     }
     public static void trySpawnBird(ClientLevel level) {
-
         if (    config.spawnBird
                 && Util.isDay(level)
                 && BirdParticle.birds.size() < config.maxBirds
@@ -144,8 +143,10 @@ public class CosyCritters {
             int x = level.getRandom().nextIntBetweenInclusive((int) (player.x - config.bird.despawnDistance), (int) (player.x + config.bird.despawnDistance));
             int z = level.getRandom().nextIntBetweenInclusive((int) (player.z - config.bird.despawnDistance), (int) (player.z + config.bird.despawnDistance));
             int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z);
+            final BlockPos blockPos = BlockPos.containing(x, y - 1, z);
             if (    Vector3d.distance(x, y, z, player.x, player.y, player.z) > config.bird.reactionDistance
-                    && config.bird.biomes.contains(level.getBiome(BlockPos.containing(x, y, z)))
+                    && config.bird.biomeList.contains(level.getBiome(blockPos))
+                    && config.bird.blockList.contains(level.getBlockState(blockPos).getBlockHolder())
             ) {
                 Minecraft.getInstance().particleEngine.add(new BirdParticle(level, x + 0.5F, y + 0.5F, z + 0.5F));
             }

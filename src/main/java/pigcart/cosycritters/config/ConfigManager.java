@@ -35,7 +35,7 @@ public class ConfigManager {
             config = new ConfigData();
             save();
         }
-        config.bird.biomes.populateInternalLists();
+        updateTransientVariables();
     }
 
     public static void save() {
@@ -44,6 +44,11 @@ public class ConfigManager {
         } catch (Exception e) {
             CosyCritters.LOGGER.error(e.getMessage());
         }
-        config.bird.biomes.populateInternalLists();
+        updateTransientVariables();
+    }
+
+    public static void updateTransientVariables() {
+        config.bird.biomeList.populateInternalLists();
+        config.bird.blockList.populateInternalLists();
     }
 }

@@ -1,6 +1,7 @@
 package pigcart.cosycritters.config;
 
 import pigcart.cosycritters.config.Whitelist.BiomeList;
+import pigcart.cosycritters.config.Whitelist.BlockList;
 import pigcart.cosycritters.config.gui.ConfigResponders.*;
 
 import static pigcart.cosycritters.config.gui.Annotations.*;
@@ -19,7 +20,8 @@ public class ConfigData {
 
     public BirdOptions bird = new BirdOptions();
     public static class BirdOptions {
-        public BiomeList biomes = new BiomeList(true, "#c:is_forest", "#c:is_taiga", "#c:is_jungle", "#minecraft:is_forest", "#minecraft:is_taiga", "#minecraft:is_jungle");
+        public BiomeList biomeList = new BiomeList(true, "#c:is_forest", "#c:is_taiga", "#c:is_jungle", "#minecraft:is_forest", "#minecraft:is_taiga", "#minecraft:is_jungle");
+        public BlockList blockList = new BlockList(true, "#minecraft:leaves");
         @Format(DistanceInBlocks.class)
         public int reactionDistance = 10;
         @Format(TimeInTicks.class)
