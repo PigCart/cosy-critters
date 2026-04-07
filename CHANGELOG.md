@@ -4,8 +4,12 @@ This project follows [Pride Versioning](https://pridever.org/) ;3
 # v0.3.2
 ###### in progress
 - fixed unreadable config inputs when CaramelChat is installed
+- fixed localization breaking decimal number inputs
+- fixed number inputs not accepting negative values
+- fixed hat man toggle not functioning (sorry!!!)
+- readded descriptions to config entries
 - added display units to config entries
-- added tooltips to config entries
+- added `zh_cn` and `zh_tw` chinese translations (ty sasaki-akari)
 
 # v0.3.1
 ###### Mar 25, 2026
@@ -18,7 +22,6 @@ This project follows [Pride Versioning](https://pridever.org/) ;3
 - reduced bird spawn rate during rain
 - fixed crash when loading mod on forge servers
 - fixed critters not appearing in multiplayer on forge due to an issue within forge itself
-- removed hat man
 
 # v0.2.0
 ###### Dec 9, 2025

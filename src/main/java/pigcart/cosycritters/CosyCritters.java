@@ -107,7 +107,7 @@ public class CosyCritters {
         if (Util.isNewMoon(minecraft.level)) {
             if (minecraft.player.isSleeping()) {
                 if (!wasSleeping) {
-                    trySpawnHatman(minecraft);
+                    if (config.spawnHatman) trySpawnHatman(minecraft);
                     wasSleeping = true;
                 }
             } else if (wasSleeping) {
@@ -116,7 +116,7 @@ public class CosyCritters {
         }
     }
     public static void trySpawnHatman(Minecraft minecraft) {
-        if (!config.spawnHatman && minecraft.level.getRandom().nextFloat() < 0.1) return;
+        if (minecraft.level.getRandom().nextBoolean()) return;
         final Optional<BlockPos> sleepingPos = minecraft.player.getSleepingPos();
         if (sleepingPos.isPresent()) {
             BlockState state = minecraft.level.getBlockState(sleepingPos.get());

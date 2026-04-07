@@ -12,7 +12,7 @@ public class ConfigData {
     @OnChange(ResetParticles.class) public int maxMoths = 8;
     @OnChange(ResetParticles.class) public int maxSpiders = 16;
 
-    public boolean spawnHatman = true;
+    public boolean spawnHatman = false;
     @OnChange(ResetParticles.class) public boolean spawnBird = true;
     @OnChange(ResetParticles.class) public boolean spawnMoth = true;
     @OnChange(ResetParticles.class) public boolean spawnSpider = true;

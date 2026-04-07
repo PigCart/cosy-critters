@@ -13,7 +13,7 @@ import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.GuiGraphics;
 //~}
 
-public class WidgetList extends ContainerObjectSelectionList<WidgetList.Entry> {
+public class WidgetList extends ContainerObjectSelectionList<WidgetList.Row> {
 
     public WidgetList(Minecraft minecraft, int width, int height, int topY, int bottomY, int itemHeight) {
         super(minecraft, width, height, topY,/*? <=1.20.1 {*/bottomY,/*?}*/ itemHeight);
@@ -21,7 +21,7 @@ public class WidgetList extends ContainerObjectSelectionList<WidgetList.Entry> {
     }
 
     public void add(AbstractWidget... widgets) {
-        this.addEntry(new Entry(widgets));
+        this.addEntry(new Row(widgets));
     }
 
     public int getRowWidth() {
@@ -34,10 +34,10 @@ public class WidgetList extends ContainerObjectSelectionList<WidgetList.Entry> {
     }
     //?}
 
-    protected static class Entry extends ContainerObjectSelectionList.Entry<Entry> {
+    protected static class Row extends ContainerObjectSelectionList.Entry<Row> {
         private final List<AbstractWidget> widgets;
 
-        Entry(AbstractWidget... widgets) {
+        Row(AbstractWidget... widgets) {
             this.widgets = ImmutableList.copyOf(widgets);
         }
 

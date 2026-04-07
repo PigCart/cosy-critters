@@ -14,14 +14,15 @@ import pigcart.cosycritters.Util;
 import pigcart.cosycritters.config.gui.Annotations.*;
 import pigcart.cosycritters.config.gui.Annotations.Label;
 
-import java.awt.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.net.URI;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -84,6 +85,7 @@ public class Widgets {
 
     public static AbstractWidget getFloat(int width, int x, String name, float initialValue, Consumer<Float> onValueChange, Function<Object, Component> valueFormatter) {
         final DecimalFormat df = new DecimalFormat();
+        df.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.ROOT));
         df.setMaximumFractionDigits(6);
         final InputWidget inputWidget = new InputWidget(width, x,
                 df.format(initialValue),
@@ -218,7 +220,7 @@ public class Widgets {
                 )};
                 screen.add(widgets);
             } else {
-                AbstractWidget[] widgets = getOptionWidget(screen, field, name, currentValue, defaultValue, onValueChange, valueFormatter, type);
+                AbstractWidget[] widgets = getRowWidgets(screen, field, name, currentValue, defaultValue, onValueChange, valueFormatter, type);
                 for (AbstractWidget widget : widgets) {
                     widget.setTooltip(Tooltip.create(Component.translatableWithFallback(name + ".description", "")));
                 }
@@ -227,7 +229,7 @@ public class Widgets {
         }
     }
     @SuppressWarnings("unchecked")
-    private static AbstractWidget[] getOptionWidget(ConfigScreen screen, Field field, String name, Object currentValue, Object defaultValue, Consumer onValueChange, Function<Object, Component> valueFormatter, Class<?> type) {
+    private static AbstractWidget[] getRowWidgets(ConfigScreen screen, Field field, String name, Object currentValue, Object defaultValue, Consumer onValueChange, Function<Object, Component> valueFormatter, Class<?> type) {
         if (field.isAnnotationPresent(Slider.class)) {
             final Slider slider = field.getAnnotation(Slider.class);
             if (type.equals(float.class)) {
