@@ -25,7 +25,7 @@ public class MothParticle extends ComplexCritterParticle {
         super(level, x, y, z, spriteSet.get(level.getRandom()));
         this.quadSize = 0.1f;
         this.lifetime = 500;
-        this.targetLamp = BlockPos.containing(x, y, z).getCenter();
+        this.targetLamp = Util.getCenter(BlockPos.containing(x, y, z));
         this.xd = 0.5f;
         CosyCritters.moths++;
     }

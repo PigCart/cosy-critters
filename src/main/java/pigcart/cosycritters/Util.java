@@ -7,6 +7,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
@@ -26,11 +27,11 @@ import java.net.URI;
 public class Util {
 
 
-    public static /*? >=1.21.11 {*//*ResourceLocation*//*?} else {*/ResourceLocation/*?}*/ getId(String path) {
+    public static ResourceLocation getId(String path) {
         //? if <=1.20.1 {
         return new ResourceLocation(CosyCritters.MOD_ID, path);
          //?} else {
-        /*return /^? >=1.21.11 {^//^ResourceLocation^//^?} else {^/ResourceLocation/^?}^/.fromNamespaceAndPath(CosyCritters.MOD_ID, path);
+        /*return ResourceLocation.fromNamespaceAndPath(CosyCritters.MOD_ID, path);
         *///?}
     }
 
@@ -109,7 +110,11 @@ public class Util {
     }
 
     public static Vec3 getCameraPos() {
+        //? >=26.2 {
+        /*return getCameraPos(Minecraft.getInstance().gameRenderer.mainCamera());
+        *///?} else {
         return getCameraPos(Minecraft.getInstance().gameRenderer.getMainCamera());
+        //?}
     }
 
     public static Vec3 getCameraPos(Camera camera) {
@@ -121,7 +126,9 @@ public class Util {
     }
 
     public static boolean isNewMoon(ClientLevel level) {
-        //? >=26.1 {
+        //? >=26.2 {
+        /*return Minecraft.getInstance().gameRenderer.gameRenderState().levelRenderState.skyRenderState.moonPhase.equals(net.minecraft.world.level.MoonPhase.NEW_MOON);
+        *///?} >=26.1 {
         /*return Minecraft.getInstance().gameRenderer.getGameRenderState().levelRenderState.skyRenderState.moonPhase.equals(net.minecraft.world.level.MoonPhase.NEW_MOON);
         *///?} >=1.21.11 {
         /*return Minecraft.getInstance().gameRenderer.getLevelRenderState().skyRenderState.moonPhase.equals(net.minecraft.world.level.MoonPhase.NEW_MOON);
@@ -139,10 +146,21 @@ public class Util {
     }
 
     public static void addChatMsg(String message) {
-        //? >=26.1 {
+        //? >=26.2 {
+        /*Minecraft.getInstance().gui.hud.getChat().addClientSystemMessage(Component.literal(message));
+        *///?} >=26.1 {
         /*Minecraft.getInstance().gui.getChat().addClientSystemMessage(Component.literal(message));
-         *///?} else {
+        *///?} else {
         Minecraft.getInstance().gui.getChat().addMessage(Component.literal(message));
         //?}
+    }
+
+    // BlockPos.getCenter removed 26.2
+    public static Vec3 getCenter(BlockPos blockPos) {
+        return new Vec3(
+                blockPos.getX() + 0.5F,
+                blockPos.getY() + 0.5F,
+                blockPos.getZ() + 0.5F
+        );
     }
 }

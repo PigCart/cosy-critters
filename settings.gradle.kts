@@ -11,7 +11,7 @@ pluginManagement {
 }
 
 plugins {
-    id("dev.kikugie.stonecutter") version "0.9.1-beta.2"
+    id("dev.kikugie.stonecutter") version "0.9.6"
 }
 
 stonecutter {
@@ -25,6 +25,7 @@ stonecutter {
                 }
             }
 
+        mc("26.2", "fabric")
         mc("26.1", "fabric")
         mc("1.21.11","fabric")
         mc("1.21.9", "fabric")

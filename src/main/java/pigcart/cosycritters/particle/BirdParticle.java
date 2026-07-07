@@ -68,14 +68,15 @@ public class BirdParticle extends CritterParticle {
                     if (y > highest.getY()) highest.set(x, y, z);
                 }
                 if (level.getFluidState(highest).isEmpty()) {
-                    this.target = highest.getCenter().toVector3f();
+                    this.target = Util.getCenter(highest).toVector3f();
                 } else {
                     setBehaviour(Behaviour.FLYING);
                 }
             }
             case PERCHED -> {
                 this.setParticleSpeed(0, 0, 0);
-                this.perch = level.getBlockState(BlockPos.containing(x, y - 0.5, z));
+                this.setPos(Mth.floor(x) + 0.5, Mth.floor(y) + 0.5, Mth.floor(z) + 0.5);
+                this.perch = level.getBlockState(BlockPos.containing(x, y - 1, z));
             }
         }
     }
@@ -101,7 +102,7 @@ public class BirdParticle extends CritterParticle {
          //potentially also away_left, away_right, toward_left, toward_right
     }
     private void reactToDisturbances() {
-        if (perch != null && !perch.equals(level.getBlockState(BlockPos.containing(x, y-0.5, z)))) {
+        if (perch != null && (perch.isAir() || !perch.equals(level.getBlockState(BlockPos.containing(x, y - 1, z))))) {
             setBehaviour(Behaviour.FLYING);
         } else if (this.age % CONFIG.reactionSpeed == 0) {
             Vec3 birdPos = new Vec3(this.x, this.y, this.z);
@@ -199,8 +200,6 @@ public class BirdParticle extends CritterParticle {
                                 && behaviourTime > 60
                                 && level.getFluidState(hitResult.getBlockPos()).isEmpty()
                         ) {
-                            Vec3 loc = hitResult.getLocation();
-                            this.setPos(loc.x, loc.y + 0.5, loc.z);
                             setBehaviour(Behaviour.PERCHED);
                             return;
                         }
@@ -234,7 +233,6 @@ public class BirdParticle extends CritterParticle {
                 Vec3 targetOffset = new Vec3(x - target.x, y - target.y, z - target.z);
                 final float responsiveness = (float) Math.min(CONFIG.landingResponsiveness, targetOffset.length());
 
-                //TODO rotate velocity direction directly towards target when close to it
                 if (this.x > target.x) this.xd -= responsiveness;
                 if (this.x < target.x) this.xd += responsiveness;
                 if (this.y > target.y) this.yd -= responsiveness;

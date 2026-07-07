@@ -4,7 +4,24 @@
 - **feature** number is increased when a new feature is added, and resets after an overhaul
 - **hotfix** number is increased when something minor is tweaked or a bug is fixed, and resets after a new feature
 
-this mimics the version scheme used by minecraft between 2011 and 2024.
+
+### vague todo list
+- ants (spiders that walk in a line)
+- flies (attracted to the scene of a death)
+- more bird types with unique behaviours and sounds
+- butterflies (moths without a lamp)
+- silverfish swarm (renders in place of silverfish)
+- bee swarm (renders in place of bee)
+- fish schools
+- rats
+- squirrel? (vertical tree rat)
+- game of life
+
+# v0.3.3
+###### Jul 7, 2026
+- added support for minecraft 26.2
+- mitigate birds perching in weird positions
+- change moth spawn requirement to `c:is_overworld` instead of the vanilla tag
 
 # v0.3.2
 ###### Apr 7, 2026

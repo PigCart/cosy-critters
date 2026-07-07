@@ -6,10 +6,12 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.tags.BiomeTags;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
@@ -29,21 +31,10 @@ import static pigcart.cosycritters.Util.*;
 import static pigcart.cosycritters.config.ConfigManager.*;
 
 public class CosyCritters {
-    //TODO
-    // ants (spiders that walk in a line)
-    // flies (attracted to the scene of a death)
-    // fireflies {ehhh maybe}
-    // a few more common bird types (pigeons, robins)
-    // butterflies (moths without a lamp)
-    // silverfish swarm (boids, renders in place of silverfish)
-    // bee swarm (boids, renders in place of bee)
-    // fish maybe?
-    // rats/mice
-    // squirrel? (vertical tree rat)
-    // game of life
 
     public static final String MOD_ID = "cosycritters";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+    static TagKey<Biome> IS_OVERWORLD = TagKey.create(Registries.BIOME, Util.parseId("c:is_overworld"));
 
     public static SimpleParticleType BIRD;
     public static SimpleParticleType HAT_MAN;
@@ -124,7 +115,7 @@ public class CosyCritters {
             if (state.hasProperty(property)) {
                 Direction direction = state.getValue(property);
                 BlockPos blockPos = BlockPos.containing(minecraft.player.position()).relative(direction.getOpposite(), 2);
-                Vec3 pos = blockPos.getCenter();
+                Vec3 pos = Util.getCenter(blockPos);
                 RandomSource random = minecraft.player.getRandom();
                 Vec3 randomPos = new Vec3(pos.x + random.nextInt(2) - 1, pos.y, pos.z + random.nextInt(2) - 1);
                 if (minecraft.level.getBlockState(BlockPos.containing(randomPos)).isAir()) {
@@ -155,7 +146,7 @@ public class CosyCritters {
     public static void trySpawnMoth(ClientLevel level, BlockPos blockPos) {
         if (    config.spawnMoth
                 && moths < config.maxMoths
-                && level.getBiome(blockPos).is(BiomeTags.IS_OVERWORLD)
+                && level.getBiome(blockPos).is(IS_OVERWORLD)
                 && !Util.isDay(level)
                 && level.getBrightness(LightLayer.BLOCK, blockPos) > 13
                 && isExposed(level, blockPos.getX(), blockPos.getY(), blockPos.getZ())
@@ -167,14 +158,14 @@ public class CosyCritters {
     public static void trySpawnSpider(Level level, BlockPos blockPos) {
         if (    config.spawnSpider
                 && spiders < config.maxSpiders
-                && !Minecraft.getInstance().player.position().closerThan(blockPos.getCenter(), 2)
+                && !Minecraft.getInstance().player.position().closerThan(Util.getCenter(blockPos), 2)
         ) {
-            if (Minecraft.getInstance().player.position().closerThan(blockPos.getCenter(), 2)) return;
+            if (Minecraft.getInstance().player.position().closerThan(Util.getCenter(blockPos), 2)) return;
             Direction direction = Direction.getRandom(level.getRandom());
             blockPos = blockPos.relative(direction);
             BlockState state = level.getBlockState(blockPos);
             if (state.isFaceSturdy(level, blockPos, direction.getOpposite())) {
-                final Vec3 spawnPos = blockPos.getCenter().add(new Vec3(direction.step()).multiply(-0.6f, -0.6f, -0.6f));
+                final Vec3 spawnPos = Util.getCenter(blockPos).add(new Vec3(direction.step()).multiply(-0.6f, -0.6f, -0.6f));
                 Util.spawnParticle(SPIDER, "spider", (ClientLevel) level, spawnPos.x, spawnPos.y, spawnPos.z);
             }
         }
