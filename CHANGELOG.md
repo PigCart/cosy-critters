@@ -20,8 +20,8 @@
 # v0.3.3
 ###### Jul 7, 2026
 - added support for minecraft 26.2
-- mitigate birds perching in weird positions
-- change moth spawn requirement to `c:is_overworld` instead of the vanilla tag
+- mitigated birds perching in weird positions
+- changed moth spawn requirement to `c:is_overworld` instead of the vanilla tag
 
 # v0.3.2
 ###### Apr 7, 2026
